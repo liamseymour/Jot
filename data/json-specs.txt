@@ -1,0 +1,38 @@
+Per note:
+	Line 1: id.
+	Line 2: note title.
+	Line 3: date-time of creation in unix time.
+	Line 4: is an array of non-checkbox strings. (Normal Notes)
+	Line 5: items that have not been completed.
+	Line 6: items that have been completed.
+
+
+{
+	"notes":[
+		{
+			"id":ID,
+			"title":TITLE,
+			"time":UNIXTIME,
+			"lines": [ LINE1, LINE2, ..., LINEN ],
+			"to-do": [ ITEM1, ITEM2, ..., ITEMN ],
+			"done": [ ITEM1, ITEM2, ..., ITEMN ]
+		},
+		{
+			"id":ID,
+			"title":TITLE,
+			"time":UNIXTIME,
+			"lines": [ LINE1, LINE2, ..., LINEN ],
+			"to-do": [ ITEM1, ITEM2, ..., ITEMN ],
+			"done": [ ITEM1, ITEM2, ..., ITEMN ]
+		},
+		{
+			"id":ID,
+			"title":TITLE,
+			"time":UNIXTIME,
+			"lines": [ LINE1, LINE2, ..., LINEN ],
+			"to-do": [ ITEM1, ITEM2, ..., ITEMN ],
+			"done": [ ITEM1, ITEM2, ..., ITEMN ]
+		},
+		...
+	]
+}
