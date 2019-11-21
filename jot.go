@@ -43,6 +43,18 @@ func fetchNotes(path string) Notes {
 	return notes
 }
 
+
+func writeNotes(notes Notes, path string) {
+	bytes, err := json.Marshal(notes)
+	if err != nil {
+		panic(err.Error())
+	}
+	err = ioutil.WriteFile(path, bytes, 0644)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
 /* Displays the given note to std out */
 func displayNote(note Note) {
 	// Header
@@ -114,4 +126,8 @@ func DisplayNotesBySearch(search string) {
 		}
 	}
 	displayNotes(filtered)
+}
+
+func Write() {
+	writeNotes(fetchNotes("data/temp-notes.json"), "data/notes.json")
 }

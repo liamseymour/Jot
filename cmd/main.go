@@ -40,5 +40,9 @@ func main() {
 		// TODO
 	case "scratch": // discard an item from the checklist
 		// TODO
+	
+	// TEMP
+	case "test":
+		jot.Write()
 	} 
 }
