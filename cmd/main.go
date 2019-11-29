@@ -47,8 +47,30 @@ func main() {
 		fmt.Println("Note added:")
 		jot.DisplayLastNote()
 
-	case "remove": // remove a note
-		// TODO
+	case "del", "delete", "remove": // remove a note
+		if len(os.Args) == 2 {
+			fmt.Println("Please specify note ID to be deleted.")
+			break
+		}
+		if os.Args[2] == "-t" || os.Args[2] == "--title" {
+			// Delete by title
+			found, id := jot.DeleteNoteByTitle(os.Args[3])
+			if (found) {
+				fmt.Printf("Note deleted with id: %s", id)
+				fmt.Println()
+			} else {
+				fmt.Println("No note found.")
+			}
+		} else {
+			// Delete by ID
+			found, title := jot.DeleteNote(os.Args[2])
+			if (found) {
+				fmt.Printf("Note deleted with title: %s", title)
+				fmt.Println()
+			} else {
+				fmt.Println("No note found.")
+			}
+		}
 	case "check": // check an item as complete
 		// TODO
 	case "uncheck": // uncheck an item

@@ -11,7 +11,7 @@ import (
 )
 
 // Reading and writting
-
+const NOTE_PATH = "./data/notes.json"
 /* An object representing a single note. */
 type Note struct {
 	Id    string   `json:"id"`
@@ -105,18 +105,18 @@ func displayNotes(notes Notes) {
 
 /* Displays the stored notes to std out. */
 func DisplayAllNotes() {
-	displayNotes(fetchNotes("data/notes.json"))
+	displayNotes(fetchNotes(NOTE_PATH))
 }
 
 /* Displays the last note taken to std out. */
 func DisplayLastNote() {
-	notes := fetchNotes("data/notes.json")
+	notes := fetchNotes(NOTE_PATH)
 	displayNote(notes.Notes[len(notes.Notes)-1])
 }
 
 /* Displays notes with any of the keywords in the title to std out. */
 func DisplayNotesBySearch(search string) {
-	notes := fetchNotes("data/notes.json")
+	notes := fetchNotes(NOTE_PATH)
 	var filtered Notes
 	keywords := strings.Split(search, " ")
 
@@ -138,13 +138,48 @@ func DisplayNotesBySearch(search string) {
 /* Given a string, make a new note and record it. Return the id of the new note */
 func NewNote(text string) string {
 	note := parseNote(text)
-	notes := fetchNotes("data/notes.json")
+	notes := fetchNotes(NOTE_PATH)
 	notes.Notes = append(notes.Notes, note)
-	writeNotes(notes, "data/notes.json")
+	writeNotes(notes, NOTE_PATH)
 	return note.Id
 }
-/* Given an id, delete the note with this id and return its contents */
-//func DeleteNote(id string) string {;}
+
+/* Given an id, delete the note with this id and return its title */
+func DeleteNote(id string) (found bool, deletedTitle string) {
+	notes := fetchNotes(NOTE_PATH)
+	found = false
+	deletedTitle = ""
+	for i := 0; i < len(notes.Notes); i++ {
+		if notes.Notes[i].Id == id {
+			found = true
+			deletedTitle = notes.Notes[i].Title
+			notes.Notes = append(notes.Notes[:i], notes.Notes[i+1:]...)
+			break
+		}
+	}
+	writeNotes(notes, NOTE_PATH)
+	return
+}
+
+/* Given a title, delete the first note that has the same title. 
+ * Return the id of the deleted note */
+func DeleteNoteByTitle(title string) (found bool, deletedId string) {
+	notes := fetchNotes(NOTE_PATH)
+	found = false
+	deletedId = ""
+	for i := 0; i < len(notes.Notes); i++ {
+		if notes.Notes[i].Title == title {
+			found = true
+			deletedId = notes.Notes[i].Id
+			notes.Notes = append(notes.Notes[:i], notes.Notes[i+1:]...)
+			break
+		}
+	}
+	writeNotes(notes, NOTE_PATH)
+	return
+}
+
+
 //func CheckItem(id string, listItem int) {;}
 //func UncheckItem(id string, listItem int) {;}
 //func AddItem(id string, listItem int) {;}
