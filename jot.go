@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 	"github.com/rs/xid"
-	// "strconv"
 )
 
 // Reading and writting
@@ -48,7 +47,7 @@ func fetchNotes(path string) Notes {
 
 /* Writes the given notes object to the given json file. */
 func writeNotes(notes Notes, path string) {
-	bytes, err := json.Marshal(notes)
+	bytes, err := json.MarshalIndent(notes, "", "    ")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -106,18 +105,18 @@ func displayNotes(notes Notes) {
 
 /* Displays the stored notes to std out. */
 func DisplayAllNotes() {
-	displayNotes(fetchNotes("data/temp-notes.json"))
+	displayNotes(fetchNotes("data/notes.json"))
 }
 
 /* Displays the last note taken to std out. */
 func DisplayLastNote() {
-	notes := fetchNotes("data/temp-notes.json")
+	notes := fetchNotes("data/notes.json")
 	displayNote(notes.Notes[len(notes.Notes)-1])
 }
 
 /* Displays notes with any of the keywords in the title to std out. */
 func DisplayNotesBySearch(search string) {
-	notes := fetchNotes("data/temp-notes.json")
+	notes := fetchNotes("data/notes.json")
 	var filtered Notes
 	keywords := strings.Split(search, " ")
 
@@ -139,9 +138,9 @@ func DisplayNotesBySearch(search string) {
 /* Given a string, make a new note and record it. Return the id of the new note */
 func NewNote(text string) string {
 	note := parseNote(text)
-	notes := fetchNotes("data/temp-notes.json")
+	notes := fetchNotes("data/notes.json")
 	notes.Notes = append(notes.Notes, note)
-	writeNotes(notes, "data/temp-notes.json")
+	writeNotes(notes, "data/notes.json")
 	return note.Id
 }
 /* Given an id, delete the note with this id and return its contents */
@@ -154,7 +153,8 @@ func NewNote(text string) string {
 
 // Helper
 
-/*  */
+/* Parses a string into a note, assuming the first line is a title and lines
+ * that begin with " - " are checklist items. */
 func parseNote(text string) Note {
 
 	lines := strings.Split(text, "\n")
@@ -169,7 +169,7 @@ func parseNote(text string) Note {
 	note.Lines = []string{}
 	note.Todo = []string{}
 	note.Done = []string{}
-	for _, line := range strings.Split(text, "\n") {
+	for _, line := range lines {
 		if strings.HasPrefix(line, " - ") {
 			note.Todo = append(note.Todo, line[3:])
 		} else {

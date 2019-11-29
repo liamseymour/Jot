@@ -37,7 +37,7 @@ func main() {
 	case "new": // add a new note
 		note := ""
 		if len(os.Args) == 3 { // If a title is supplied, use it
-			note += os.Args[2]
+			note += os.Args[2] + "\n"
 			note += readNoteFromConsole(false, os.Args[2])
 		} else {
 			note = readNoteFromConsole(true, "")
@@ -66,7 +66,7 @@ func readNoteFromConsole(getTitle bool, title string) string {
 	if getTitle {
 		fmt.Print("New Note Title: ")
 	} else {
-		fmt.Printf("%v: ", title)
+		fmt.Printf("%v: \n", title)
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	s := ""

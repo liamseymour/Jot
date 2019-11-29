@@ -1,1 +1,31 @@
-{"notes":[{"id":"b50vl5e54p1000fo3gh0","title":"Jot TODO","time":1574365174,"lines":["made up lines loloollololo","whatever example testing  1 2 3..."],"to-do":["Commands and Options","Structure","Automatic backup","Model","view","Commands and Options","Structure","Automatic backup","Model","view","Commands and Options","Structure","Automatic backup","Model","view","Commands and Options","Structure","Automatic backup","Model","view"],"done":["Json format","Language"]},{"id":"e50vl5e54p1000fo3gh0","title":"Project Ideas","time":1574365283,"lines":[],"to-do":["Note Taking Program","Note taking file format (compiler + specs)"],"done":[]}]}
+{
+    "notes": [
+        {
+            "id": "bngldasu76lkv747d0o0",
+            "title": "School",
+            "time": 1575048875,
+            "lines": [],
+            "to-do": [
+                "Jflex assignment (Late)",
+                "Project 3 - Languages and Machines (12/4)",
+                "Project 3 - Comp Graphics (12/6)",
+                "Small Project 5 - Web Dev (12/12)",
+                "Term Project (12/12)",
+                "Real Analysis HW (12/4)"
+            ],
+            "done": []
+        },
+        {
+            "id": "bngll4su76ljts1gb5fg",
+            "title": "Project Ideas",
+            "time": 1575049875,
+            "lines": [],
+            "to-do": [
+                "Note taking program",
+                "Note writing file format",
+                "Program to begin the day"
+            ],
+            "done": []
+        }
+    ]
+}
