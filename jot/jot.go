@@ -8,10 +8,12 @@ import (
 	"strings"
 	"time"
 	"github.com/rs/xid"
+	"github.com/gookit/color"
 )
 
 // Reading and writting
-const NOTE_PATH = "./data/notes.json"
+
+
 /* An object representing a single note. */
 type Note struct {
 	Id    string   `json:"id"`
@@ -64,7 +66,8 @@ func displayNote(note Note) {
 	// Header
 	fmt.Println()
 	time := time.Unix(int64(note.Time), 0).Format("Jan _2 3:04:05 2006")
-	fmt.Println(note.Title, "- Taken:", time)
+	color.Red.Printf("%s ", note.Title)
+	fmt.Println("- Taken:", time)
 	fmt.Println("ID: ", note.Id)
 
 	// Lines
@@ -104,19 +107,19 @@ func displayNotes(notes Notes) {
 }
 
 /* Displays the stored notes to std out. */
-func DisplayAllNotes() {
-	displayNotes(fetchNotes(NOTE_PATH))
+func DisplayAllNotes(path string) {
+	displayNotes(fetchNotes(path))
 }
 
 /* Displays the last note taken to std out. */
-func DisplayLastNote() {
-	notes := fetchNotes(NOTE_PATH)
+func DisplayLastNote(path string) {
+	notes := fetchNotes(path)
 	displayNote(notes.Notes[len(notes.Notes)-1])
 }
 
 /* Displays notes with any of the keywords in the title to std out. */
-func DisplayNotesBySearch(search string) {
-	notes := fetchNotes(NOTE_PATH)
+func DisplayNotesBySearch(path string, search string) {
+	notes := fetchNotes(path)
 	var filtered Notes
 	keywords := strings.Split(search, " ")
 
@@ -136,17 +139,17 @@ func DisplayNotesBySearch(search string) {
 // Management
 
 /* Given a string, make a new note and record it. Return the id of the new note */
-func NewNote(text string) string {
+func NewNote(path string, text string) string {
 	note := parseNote(text)
-	notes := fetchNotes(NOTE_PATH)
+	notes := fetchNotes(path)
 	notes.Notes = append(notes.Notes, note)
-	writeNotes(notes, NOTE_PATH)
+	writeNotes(notes, path)
 	return note.Id
 }
 
 /* Given an id, delete the note with this id and return its title */
-func DeleteNote(id string) (found bool, deletedTitle string) {
-	notes := fetchNotes(NOTE_PATH)
+func DeleteNote(path string, id string) (found bool, deletedTitle string) {
+	notes := fetchNotes(path)
 	found = false
 	deletedTitle = ""
 	for i := 0; i < len(notes.Notes); i++ {
@@ -157,14 +160,14 @@ func DeleteNote(id string) (found bool, deletedTitle string) {
 			break
 		}
 	}
-	writeNotes(notes, NOTE_PATH)
+	writeNotes(notes, path)
 	return
 }
 
 /* Given a title, delete the first note that has the same title. 
  * Return the id of the deleted note */
-func DeleteNoteByTitle(title string) (found bool, deletedId string) {
-	notes := fetchNotes(NOTE_PATH)
+func DeleteNoteByTitle(path string, title string) (found bool, deletedId string) {
+	notes := fetchNotes(path)
 	found = false
 	deletedId = ""
 	for i := 0; i < len(notes.Notes); i++ {
@@ -175,7 +178,7 @@ func DeleteNoteByTitle(title string) (found bool, deletedId string) {
 			break
 		}
 	}
-	writeNotes(notes, NOTE_PATH)
+	writeNotes(notes, path)
 	return
 }
 

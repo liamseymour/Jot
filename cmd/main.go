@@ -2,12 +2,19 @@ package main
 
 import (
 	"fmt"
-	"jot"
+	"jot/jot"
 	"os"
 	"bufio"
+	"path/filepath"
 )
 
 func main() {
+	path, err := os.Executable()
+	if err != nil {
+		panic(err.Error())
+	}
+	path = filepath.Join(path, "../../data/notes.json")
+
 	// User has entered no arguments
 	if len(os.Args) == 1 {
 		// TODO help
@@ -21,17 +28,17 @@ func main() {
 
 	case "ls": // display notes
 		if len(os.Args) == 2 {
-			jot.DisplayLastNote()
+			jot.DisplayLastNote(path)
 		} else {
 			switch os.Args[2] { // list with an optional
 			case "-a", "--all": // display all notes
-				jot.DisplayAllNotes()
+				jot.DisplayAllNotes(path)
 			}
 		}
 
 	case "search": // search for a note
 		if len(os.Args) == 3 {
-			jot.DisplayNotesBySearch(os.Args[2])
+			jot.DisplayNotesBySearch(path, os.Args[2])
 		}
 
 	case "new": // add a new note
@@ -43,9 +50,9 @@ func main() {
 			note = readNoteFromConsole(true, "")
 		}
 
-		jot.NewNote(note)
+		jot.NewNote(path, note)
 		fmt.Println("Note added:")
-		jot.DisplayLastNote()
+		jot.DisplayLastNote(path)
 
 	case "del", "delete", "remove": // remove a note
 		if len(os.Args) == 2 {
@@ -54,7 +61,7 @@ func main() {
 		}
 		if os.Args[2] == "-t" || os.Args[2] == "--title" {
 			// Delete by title
-			found, id := jot.DeleteNoteByTitle(os.Args[3])
+			found, id := jot.DeleteNoteByTitle(path, os.Args[3])
 			if (found) {
 				fmt.Printf("Note deleted with id: %s", id)
 				fmt.Println()
@@ -63,7 +70,7 @@ func main() {
 			}
 		} else {
 			// Delete by ID
-			found, title := jot.DeleteNote(os.Args[2])
+			found, title := jot.DeleteNote(path, os.Args[2])
 			if (found) {
 				fmt.Printf("Note deleted with title: %s", title)
 				fmt.Println()
