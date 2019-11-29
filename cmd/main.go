@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"jot"
 	"os"
+	"bufio"
 )
 
 func main() {
@@ -13,8 +15,10 @@ func main() {
 	} 
 
 	switch os.Args[1] {
+	
 	case "-h", "help":
 		// TODO help
+
 	case "ls": // display notes
 		if len(os.Args) == 2 {
 			jot.DisplayLastNote()
@@ -24,12 +28,25 @@ func main() {
 				jot.DisplayAllNotes()
 			}
 		}
+
 	case "search": // search for a note
 		if len(os.Args) == 3 {
 			jot.DisplayNotesBySearch(os.Args[2])
 		}
+
 	case "new": // add a new note
-		// TODO
+		note := ""
+		if len(os.Args) == 3 { // If a title is supplied, use it
+			note += os.Args[2]
+			note += readNoteFromConsole(false, os.Args[2])
+		} else {
+			note = readNoteFromConsole(true, "")
+		}
+
+		jot.NewNote(note)
+		fmt.Println("Note added:")
+		jot.DisplayLastNote()
+
 	case "remove": // remove a note
 		// TODO
 	case "check": // check an item as complete
@@ -40,9 +57,24 @@ func main() {
 		// TODO
 	case "scratch": // discard an item from the checklist
 		// TODO
-	
-	// TEMP
-	case "test":
-		jot.Write()
-	} 
+	default:
+		fmt.Printf("Unkown command: '%v'. Use 'jot help' to see a list of available commands.", os.Args[1])
+	}
+}
+
+func readNoteFromConsole(getTitle bool, title string) string {
+	if getTitle {
+		fmt.Print("New Note Title: ")
+	} else {
+		fmt.Printf("%v: ", title)
+	}
+	scanner := bufio.NewScanner(os.Stdin)
+	s := ""
+
+	for scanner.Scan() {
+		s += scanner.Text()
+		s += "\n"
+	}
+
+	return s
 }

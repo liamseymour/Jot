@@ -7,20 +7,23 @@ import (
 	"os"
 	"strings"
 	"time"
+	"github.com/rs/xid"
 	// "strconv"
 )
 
-// Individual note struct used to load json data
+// Reading and writting
+
+/* An object representing a single note. */
 type Note struct {
 	Id    string   `json:"id"`
 	Title string   `json:"title"`
-	Time  float64  `json:"time"`
+	Time  int64  `json:"time"`
 	Lines []string `json:"lines"`
 	Todo  []string `json:"to-do"`
 	Done  []string `json:"done"`
 }
 
-// All of the Notes
+/* An object representing a collection of notes. */
 type Notes struct {
 	Notes []Note `json:"notes"`
 }
@@ -43,7 +46,7 @@ func fetchNotes(path string) Notes {
 	return notes
 }
 
-
+/* Writes the given notes object to the given json file. */
 func writeNotes(notes Notes, path string) {
 	bytes, err := json.Marshal(notes)
 	if err != nil {
@@ -55,7 +58,9 @@ func writeNotes(notes Notes, path string) {
 	}
 }
 
-/* Displays the given note to std out */
+// Display
+
+/* Displays the given note to std out. */
 func displayNote(note Note) {
 	// Header
 	fmt.Println()
@@ -92,25 +97,25 @@ func displayNote(note Note) {
 	}
 }
 
-/* Displays the given notes to std out */
+/* Displays the given notes to std out. */
 func displayNotes(notes Notes) {
 	for i := 0; i < len(notes.Notes); i++ {
 		displayNote(notes.Notes[i])
 	}
 }
 
-/* Displays the stored notes to std out */
+/* Displays the stored notes to std out. */
 func DisplayAllNotes() {
 	displayNotes(fetchNotes("data/temp-notes.json"))
 }
 
-/* Displays the last note taken to std out */
+/* Displays the last note taken to std out. */
 func DisplayLastNote() {
 	notes := fetchNotes("data/temp-notes.json")
 	displayNote(notes.Notes[len(notes.Notes)-1])
 }
 
-/* Displays notes with any of the keywords in the title to std out */
+/* Displays notes with any of the keywords in the title to std out. */
 func DisplayNotesBySearch(search string) {
 	notes := fetchNotes("data/temp-notes.json")
 	var filtered Notes
@@ -128,6 +133,48 @@ func DisplayNotesBySearch(search string) {
 	displayNotes(filtered)
 }
 
-func Write() {
-	writeNotes(fetchNotes("data/temp-notes.json"), "data/notes.json")
+
+// Management
+
+/* Given a string, make a new note and record it. Return the id of the new note */
+func NewNote(text string) string {
+	note := parseNote(text)
+	notes := fetchNotes("data/temp-notes.json")
+	notes.Notes = append(notes.Notes, note)
+	writeNotes(notes, "data/temp-notes.json")
+	return note.Id
 }
+/* Given an id, delete the note with this id and return its contents */
+//func DeleteNote(id string) string {;}
+//func CheckItem(id string, listItem int) {;}
+//func UncheckItem(id string, listItem int) {;}
+//func AddItem(id string, listItem int) {;}
+//func RemoveItem(id string, listItem int) string {;}
+
+
+// Helper
+
+/*  */
+func parseNote(text string) Note {
+
+	lines := strings.Split(text, "\n")
+	if (lines[len(lines)-1] == "") {
+		lines = lines[0:len(lines)-1]
+	}
+	var note Note
+	note.Id = xid.New().String()
+	note.Title = lines[0]
+	lines = lines[1:] // pop title
+	note.Time = time.Now().Unix()
+	note.Lines = []string{}
+	note.Todo = []string{}
+	note.Done = []string{}
+	for _, line := range strings.Split(text, "\n") {
+		if strings.HasPrefix(line, " - ") {
+			note.Todo = append(note.Todo, line[3:])
+		} else {
+			note.Lines = append(note.Lines, line)
+		}
+	}
+	return note
+} 
