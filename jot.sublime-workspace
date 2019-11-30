@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"file",
+				"filepath"
+			],
+			[
+				"wri",
+				"writeNotes"
+			],
+			[
+				"del",
+				"deletedTitle"
+			],
+			[
+				"Dis",
+				"DisplayLastNote"
+			],
+			[
+				"rea",
+				"readNoteFromConsole"
+			],
+			[
 				"On",
 				"OnPlayerDeath()\tvoid"
 			],
@@ -396,10 +416,6 @@
 				"reviewfile"
 			],
 			[
-				"file",
-				"filename"
-			],
-			[
 				"rev",
 				"reviewfile"
 			],
@@ -488,11 +504,37 @@
 	"buffers":
 	[
 		{
+			"file": "jot/jot.go",
+			"settings":
+			{
+				"buffer_size": 4998,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "data/notes.json",
+			"settings":
+			{
+				"buffer_size": 871,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "cmd/main.go",
 			"settings":
 			{
-				"buffer_size": 866,
+				"buffer_size": 2263,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "jot.sublime-project",
+			"settings":
+			{
+				"buffer_size": 45,
+				"line_ending": "Unix"
 			}
 		}
 	],
@@ -571,10 +613,16 @@
 	[
 		"/C/Users/liamg/go/src/jot",
 		"/C/Users/liamg/go/src/jot/cmd",
-		"/C/Users/liamg/go/src/jot/data"
+		"/C/Users/liamg/go/src/jot/data",
+		"/C/Users/liamg/go/src/jot/jot"
 	],
 	"file_history":
 	[
+		"/C/Users/liamg/go/src/jot/build.py",
+		"/C/Users/liamg/go/src/jot/jot.go",
+		"/C/Users/liamg/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/profiles.json",
+		"/C/Users/liamg/go/src/jot/cmd/temp.go",
+		"/C/Users/liamg/go/src/jot/cmd/main.go",
 		"/C/Users/liamg/go/src/jot/jot.sublime-project",
 		"/C/Users/liamg/Documents/Programs/Unity/Sabastian Tutorial/Sabastian Tutorial.sublime-project",
 		"/C/Users/liamg/Documents/Programs/Unity/Sabastian Tutorial/Assets/Scripts/PlayerController.cs",
@@ -583,11 +631,9 @@
 		"/C/Users/liamg/Documents/Programs/Unity/Tutorial/Assembly-CSharp.csproj",
 		"/C/Users/liamg/Documents/Programs/Unity/Tutorial/Assets/Scripts/Player.cs.cs",
 		"/C/Users/liamg/New Unity Project/Library/PackageCache/com.unity.render-pipelines.core@6.9.0/Runtime/Volume/VolumeProfile.cs",
-		"/C/Users/liamg/go/src/jot/jot.go",
 		"/C/Users/liamg/go/src/jot/data/json-specs.txt",
 		"/C/Users/liamg/go/src/jot/data/temp-notes.json",
 		"/C/Users/liamg/go/src/jot/data/notes.json",
-		"/C/Users/liamg/go/src/jot/cmd/main.go",
 		"/C/Users/liamg/go/main.go",
 		"/C/Users/liamg/go/src/jot/model.go",
 		"/C/Users/liamg/Documents/Programs/Go/Jot/temp-notes.json",
@@ -615,7 +661,6 @@
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3700 - Web Development/Projects/Sudoku/scripts/sudoku-model.js",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3700 - Web Development/Projects/Sudoku/index.html",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3700 - Web Development/Projects/Sudoku/help.html",
-		"/C/Users/liamg/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/profiles.json",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3700 - Web Development/Projects/Sudoku/scripts/temp.txt",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3700 - Web Development/Projects/Sudoku/scripts/sudoku-app.js",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3700 - Web Development/Projects/Sudoku/scripts/sudoku-controller.js",
@@ -690,11 +735,11 @@
 	],
 	"find":
 	{
-		"height": 29.0
+		"height": 41.0
 	},
 	"find_in_files":
 	{
-		"height": 107.0,
+		"height": 109.0,
 		"where_history":
 		[
 		]
@@ -704,6 +749,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"notePath",
+			"NOTE_PATH",
+			"background",
+			"            \"",
+			"\"data/notes.json\""
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -726,19 +776,19 @@
 			[
 				{
 					"buffer": 0,
-					"file": "cmd/main.go",
-					"semi_transient": true,
+					"file": "jot/jot.go",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 866,
+						"buffer_size": 4998,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								195,
-								195
+								243,
+								243
 							]
 						],
 						"settings":
@@ -747,10 +797,101 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 148.8,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "data/notes.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 871,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								596,
+								596
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 2,
+					"file": "cmd/main.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2263,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								300,
+								300
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "jot.sublime-project",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 45,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								45,
+								45
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -773,11 +914,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.5,
 			1.0
 		],
 		"rows":
@@ -813,6 +961,10 @@
 		"selected_items":
 		[
 			[
+				"",
+				"jot.go"
+			],
+			[
 				"spaw",
 				"Spawner.cs"
 			],
@@ -831,10 +983,6 @@
 			[
 				"en",
 				"Enemy.cs"
-			],
-			[
-				"",
-				"LivingEntity.cs"
 			],
 			[
 				"Liv",

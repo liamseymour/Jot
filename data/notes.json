@@ -26,6 +26,22 @@
                 "Program to begin the day"
             ],
             "done": []
+        },
+        {
+            "id": "bngre9ku76li6v1ts97g",
+            "title": "jot",
+            "time": 1575073574,
+            "lines": [],
+            "to-do": [
+                "CheckItem function",
+                "UncheckItem function",
+                "AddItem function",
+                "RemoveItem function",
+                "Alias capability",
+                "Add note in sublime",
+                "Edit note (in sublime)"
+            ],
+            "done": []
         }
     ]
 }
