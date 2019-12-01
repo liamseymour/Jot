@@ -99,6 +99,11 @@ func displayNote(note Note) {
 	}
 }
 
+func DisplayNoteById(path string, id string) {
+	note, _ := getNoteById(path, id)
+	displayNote(note)
+}
+
 /* Displays the given notes to std out. */
 func displayNotes(notes Notes) {
 	for i := 0; i < len(notes.Notes); i++ {
@@ -148,7 +153,7 @@ func NewNote(path string, text string) string {
 }
 
 /* Given an id, delete the note with this id and return its title */
-func DeleteNote(path string, id string) (found bool, deletedTitle string) {
+func DeleteNote(path string, id string) (deletedTitle string, found bool) {
 	notes := fetchNotes(path)
 	found = false
 	deletedTitle = ""
@@ -166,7 +171,7 @@ func DeleteNote(path string, id string) (found bool, deletedTitle string) {
 
 /* Given a title, delete the first note that has the same title. 
  * Return the id of the deleted note */
-func DeleteNoteByTitle(path string, title string) (found bool, deletedId string) {
+func DeleteNoteByTitle(path string, title string) (deletedId string, found bool) {
 	notes := fetchNotes(path)
 	found = false
 	deletedId = ""
@@ -182,8 +187,30 @@ func DeleteNoteByTitle(path string, title string) (found bool, deletedId string)
 	return
 }
 
+/* Given the id of the note, check the nth item.  
+ * return the item and if the operation was successful. */
+func CheckItem(path string, id string, n int) (string, bool) {
+	note, foundNote := getNoteById(path, id)
+	foundItem := false
+	item := ""
+	if (n < len(note.Todo) && n >= 0 && foundNote) {
+		foundItem = true
+		item = note.Todo[n]
+		note.Todo = append(note.Todo[:n], note.Todo[n + 1:]...)
+		note.Done = append(note.Done, item)
+	}
 
-//func CheckItem(id string, listItem int) {;}
+	notes, success := replaceNote(path, id, note)
+	if foundNote && foundItem && success {
+		writeNotes(notes, path)
+		fmt.Printf("If success: %v\n", success) // true here
+	}
+	fmt.Printf("Return success: %v\n", success) // false here
+
+	return item, success
+}
+
+
 //func UncheckItem(id string, listItem int) {;}
 //func AddItem(id string, listItem int) {;}
 //func RemoveItem(id string, listItem int) string {;}
@@ -210,6 +237,8 @@ func parseNote(text string) Note {
 	for _, line := range lines {
 		if strings.HasPrefix(line, " - ") {
 			note.Todo = append(note.Todo, line[3:])
+		} else if strings.HasPrefix(line, " X ") {
+			note.Done = append(note.Done, line[3:])
 		} else {
 			note.Lines = append(note.Lines, line)
 		}
@@ -217,5 +246,45 @@ func parseNote(text string) Note {
 	return note
 }
 
+func noteToString(note Note) string {
+	s := note.Title + "\n"
+	for _, line := range note.Lines {
+		s += line + "\n"
+	}
+	for _, line := range note.Todo {
+		s += " - " + line + "\n"
+	}
+	for _, line := range note.Done {
+		s += " X " + line + "\n"
+	}
+	return s
+}
 
+func getNoteById(path string, id string) (note Note, found bool) {
+	notes := fetchNotes(path)
+	found = false
+	for i := 0; i < len(notes.Notes); i++ {
+		if notes.Notes[i].Id == id {
+			found = true
+			note = notes.Notes[i]
+			break
+		}
+	}
+	return
+}
 
+func replaceNote(path string, id string, newNote Note) (notes Notes, success bool) {
+	success = false
+	notes = fetchNotes(path)
+
+	for i := 0; i < len(notes.Notes); i++ {
+		// find note to replace
+		if notes.Notes[i].Id == id {
+			notes.Notes[i] = newNote
+			success = true
+			break
+		}
+	}
+
+	return
+}

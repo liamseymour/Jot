@@ -5,15 +5,15 @@ import (
 	"jot/jot"
 	"os"
 	"bufio"
-	"path/filepath"
+	"strconv"
+	//"path/filepath"
 )
 
 func main() {
 	path, err := os.Executable()
-	if err != nil {
-		panic(err.Error())
-	}
-	path = filepath.Join(path, "../../data/notes.json")
+	check(err)
+	//path = filepath.Join(path, "../../data/notes.json")
+	/* Debugging */path = "C:/Users/liamg/go/src/jot/data/notes.json"
 
 	// User has entered no arguments
 	if len(os.Args) == 1 {
@@ -61,25 +61,42 @@ func main() {
 		}
 		if os.Args[2] == "-t" || os.Args[2] == "--title" {
 			// Delete by title
-			found, id := jot.DeleteNoteByTitle(path, os.Args[3])
+			id, found := jot.DeleteNoteByTitle(path, os.Args[3])
 			if (found) {
-				fmt.Printf("Note deleted with id: %s", id)
+				fmt.Printf("Note deleted with id: '%s'", id)
 				fmt.Println()
 			} else {
 				fmt.Println("No note found.")
 			}
 		} else {
 			// Delete by ID
-			found, title := jot.DeleteNote(path, os.Args[2])
+			title, found := jot.DeleteNote(path, os.Args[2])
 			if (found) {
-				fmt.Printf("Note deleted with title: %s", title)
+				fmt.Printf("Note deleted with title: '%s'", title)
 				fmt.Println()
 			} else {
 				fmt.Println("No note found.")
 			}
 		}
+
 	case "check": // check an item as complete
-		// TODO
+		n, err := strconv.Atoi(os.Args[2])
+		id := os.Args[3]
+		if err != nil || n < 0 {
+			fmt.Printf("'%v' is not an non-negative integer.", os.Args[2])
+			break
+		}
+		
+		item, success := jot.CheckItem(path, id, n)
+
+		if success {
+			fmt.Printf("Checked item: '%s' from note with id: '%s'\n", item, id)
+		} else {
+			fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
+		}
+
+		jot.DisplayNoteById(path, id)
+
 	case "uncheck": // uncheck an item
 		// TODO
 	case "add": // add a item to the checklist
@@ -106,4 +123,10 @@ func readNoteFromConsole(getTitle bool, title string) string {
 	}
 
 	return s
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err.Error())
+	}
 }
