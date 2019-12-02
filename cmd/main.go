@@ -4,15 +4,18 @@ import (
 	"fmt"
 	"jot/jot"
 	"os"
+	"os/exec"
 	"bufio"
+	"io/ioutil"
 	"strconv"
-	//"path/filepath"
+	"path/filepath"
 )
 
 func main() {
 	path, err := os.Executable()
 	check(err)
 	//path = filepath.Join(path, "../../data/notes.json")
+	/* Debugging */dataPath := "C:/Users/liamg/go/src/jot/data/"
 	/* Debugging */path = "C:/Users/liamg/go/src/jot/data/notes.json"
 
 	// User has entered no arguments
@@ -43,11 +46,20 @@ func main() {
 
 	case "new": // add a new note
 		note := ""
-		if len(os.Args) == 3 { // If a title is supplied, use it
-			note += os.Args[2] + "\n"
-			note += readNoteFromConsole(false, os.Args[2])
+		if len(os.Args) >= 3 && os.Args[2] == "-p" {
+			// (p)opout, in our case use sublime text to write the note
+			title := ""
+			if len(os.Args) == 4 { // If a title is supplied, use it
+				title = os.Args[3]
+			}
+			note = readNoteFromSublime(dataPath, title)
 		} else {
-			note = readNoteFromConsole(true, "")
+			if len(os.Args) == 3 { // If a title is supplied, use it
+				note += os.Args[2] + "\n"
+				note += readNoteFromConsole(false, os.Args[2])
+			} else {
+				note = readNoteFromConsole(true, "")
+			}
 		}
 
 		jot.NewNote(path, note)
@@ -198,7 +210,7 @@ func main() {
 				fmt.Printf("Cannot find note with id: '%s'\n", id)
 			}
 		}
-		
+
 	case "scratch": // discard an item from the checklist
 		var title bool
 		var nString string
@@ -261,6 +273,36 @@ func readNoteFromConsole(getTitle bool, title string) string {
 	}
 
 	return s
+}
+
+func readNoteFromSublime(path, title string) string {
+	// create text file
+	fp := filepath.Join(path, "input.txt")
+	file, err := os.Create(fp)
+	check(err)
+	titleBytes := []byte(title + "\nThe first line is the title. Bullet points are lines that begin with \" - \".")
+	_, err = file.Write(titleBytes)
+	check(err)
+	file.Close()
+
+	// open in sublime
+	cmd := exec.Command("subl", "-n", fp)
+	err = cmd.Run()
+	check(err)
+
+	// when the user says so, read it
+	fmt.Println("Press enter to continue.")
+	reader := bufio.NewReader(os.Stdin)
+	_, _, _ = reader.ReadRune()
+
+	bytes, err := ioutil.ReadFile(fp)
+	check(err)
+
+	// delete text file
+	err = os.Remove(fp)
+	check(err)
+
+	return string(bytes) 
 }
 
 func check(err error) {
