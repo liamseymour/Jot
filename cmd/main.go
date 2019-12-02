@@ -122,11 +122,125 @@ func main() {
 		}
 
 	case "uncheck": // uncheck an item
-		// TODO
+		var title bool
+		var nString string
+		var id string
+		if len(os.Args) == 5 && os.Args[2] == "-t" {
+			nString = os.Args[3]
+			id = os.Args[4]
+			title = true
+		} else if len(os.Args) == 4 {
+			nString = os.Args[2]
+			id = os.Args[3]
+			title = false
+		}
+		n, err := strconv.Atoi(nString)
+		
+		if err != nil || n < 0 {
+			fmt.Printf("'%v' is not an non-negative integer.", os.Args[2])
+			break
+		}
+		
+		var item string
+		var success bool
+		if title {
+			item, success = jot.UnCheckItemByNoteTitle(path, id, n)
+
+			if success {
+				fmt.Printf("Unchecked item: '%s' from note with title: '%s'\n", item, id)
+				jot.DisplayNoteByTitle(path, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, id)
+			}
+		} else {
+			item, success = jot.UnCheckItem(path, id, n)
+
+			if success {
+				fmt.Printf("Unchecked item: '%s' from note with id: '%s'\n", item, id)
+				jot.DisplayNoteById(path, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
+			}
+		}
+
 	case "add": // add a item to the checklist
-		// TODO
+		var title bool
+		var item string
+		var id string
+		if len(os.Args) == 5 && os.Args[2] == "-t" {
+			item = os.Args[3]
+			id = os.Args[4]
+			title = true
+		} else if len(os.Args) == 4 {
+			item = os.Args[2]
+			id = os.Args[3]
+			title = false
+		}
+		
+		var success bool
+		if title {
+			success = jot.AddItemByNoteTitle(path, id, item)
+
+			if success {
+				fmt.Printf("Added item: '%s' to note with title: '%s'\n", item, id)
+				jot.DisplayNoteByTitle(path, id)
+			} else {
+				fmt.Printf("Cannot find note with title: '%s'\n", id)
+			}
+		} else {
+			
+			success = jot.AddItem(path, id, item)
+
+			if success {
+				fmt.Printf("Added item: '%s' to note with id: '%s'\n", item, id)
+				jot.DisplayNoteById(path, id)
+			} else {
+				fmt.Printf("Cannot find note with id: '%s'\n", id)
+			}
+		}
+		
 	case "scratch": // discard an item from the checklist
-		// TODO
+		var title bool
+		var nString string
+		var id string
+		if len(os.Args) == 5 && os.Args[2] == "-t" {
+			nString = os.Args[3]
+			id = os.Args[4]
+			title = true
+		} else if len(os.Args) == 4 {
+			nString = os.Args[2]
+			id = os.Args[3]
+			title = false
+		}
+		n, err := strconv.Atoi(nString)
+		
+		if err != nil || n < 0 {
+			fmt.Printf("'%v' is not an non-negative integer.", os.Args[2])
+			break
+		}
+		
+		var item string
+		var success bool
+		if title {
+			item, success = jot.RemoveItemByNoteTitle(path, id, n)
+
+			if success {
+				fmt.Printf("Removed item: '%s' from note with title: '%s'\n", item, id)
+				jot.DisplayNoteByTitle(path, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, id)
+			}
+		} else {
+			item, success = jot.RemoveItem(path, id, n)
+
+			if success {
+				fmt.Printf("Removed item: '%s' from note with id: '%s'\n", item, id)
+				jot.DisplayNoteById(path, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
+			}
+		}
+
 	default:
 		fmt.Printf("Unkown command: '%v'. Use 'jot help' to see a list of available commands.", os.Args[1])
 	}

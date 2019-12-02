@@ -203,10 +203,13 @@ func CheckItem(path string, id string, n int) (item string, success bool) {
 		note.Done = append(note.Done, item)
 	}
 
-	var notes Notes
-	notes, success = replaceNote(path, id, note)
-	if foundNote && foundItem && success {
-		writeNotes(notes, path)
+	success = false
+	if foundItem {
+		var notes Notes
+		notes, success = replaceNote(path, id, note)
+		if foundNote && foundItem && success {
+			writeNotes(notes, path)
+		}
 	}
 
 	return
@@ -220,8 +223,95 @@ func CheckItemByNoteTitle(path string, title string, n int) (item string, succes
 	return "", found
 }
 
+/* Given the id of the note, uncheck the nth item.  
+ * return the item and if the operation was successful. */
+func UnCheckItem(path string, id string, n int) (item string, success bool) {
+	note, foundNote := getNoteById(path, id)
+	foundItem := false
+	item = ""
+	if (n < len(note.Done) && n >= 0 && foundNote) {
+		foundItem = true
+		item = note.Done[n]
+		note.Done = append(note.Done[:n], note.Done[n + 1:]...)
+		note.Todo = append(note.Todo, item)
+	}
 
-//func UncheckItem(id string, listItem int) {;}
+	success = false
+	if foundItem {
+		var notes Notes
+		notes, success = replaceNote(path, id, note)
+		if foundNote && foundItem && success {
+			writeNotes(notes, path)
+		}
+	}
+	return
+}
+
+func UnCheckItemByNoteTitle(path string, title string, n int) (item string, success bool) {
+	id, found := getIdFromTitle(path, title)
+	if (found) {
+		return UnCheckItem(path, id, n)
+	}
+	return "", found
+}
+
+/* Given the id of the note, uncheck the nth item.  
+ * return the item and if the operation was successful. */
+func RemoveItem(path string, id string, n int) (item string, success bool) {
+	note, foundNote := getNoteById(path, id)
+	foundItem := false
+	item = ""
+	if (n < len(note.Todo) && n >= 0 && foundNote) {
+		foundItem = true
+		item = note.Todo[n]
+		note.Todo = append(note.Todo[:n], note.Todo[n + 1:]...)
+	}
+
+	success = false
+	if foundItem {
+		var notes Notes
+		notes, success = replaceNote(path, id, note)
+		if foundNote && foundItem && success {
+			writeNotes(notes, path)
+		}
+	}
+	return
+}
+
+func RemoveItemByNoteTitle(path string, title string, n int) (item string, success bool) {
+	id, found := getIdFromTitle(path, title)
+	if (found) {
+		return RemoveItem(path, id, n)
+	}
+	return "", found
+}
+
+/* Given the id of the note, uncheck the nth item.  
+ * return the item and if the operation was successful. */
+func AddItem(path string, id string, item string) (success bool) {
+	note, foundNote := getNoteById(path, id)
+	note.Todo = append(note.Todo, item)
+
+	success = false
+	if foundNote {
+		var notes Notes
+		notes, success = replaceNote(path, id, note)
+		if foundNote && success {
+			writeNotes(notes, path)
+		}
+	}
+	return
+}
+
+func AddItemByNoteTitle(path string, title string, item string) (success bool) {
+	id, found := getIdFromTitle(path, title)
+	if (found) {
+		return AddItem(path, id, item)
+	}
+	return found
+}
+
+
 //func AddItem(id string, listItem int) {;}
 //func RemoveItem(id string, listItem int) string {;}
 
