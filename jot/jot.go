@@ -65,10 +65,12 @@ func writeNotes(notes Notes, path string) {
 func displayNote(note Note) {
 	// Header
 	fmt.Println()
-	time := time.Unix(int64(note.Time), 0).Format("Jan _2 3:04:05 2006")
-	color.Red.Printf("%s ", note.Title)
-	fmt.Println("- Taken:", time)
-	fmt.Println("ID: ", note.Id)
+	time := time.Unix(int64(note.Time), 0).Format("Jan 2 3:04 2006")
+	color.Yellow.Printf("%s\n", note.Title)
+	fmt.Print("Taken: ")
+	color.Blue.Printf("%v\n", time)
+	fmt.Print("ID: ")
+	color.Blue.Printf("%s", note.Id)
 
 	// Lines
 	if len(note.Lines) != 0 {
@@ -97,11 +99,20 @@ func displayNote(note Note) {
 		fmt.Printf("%5v", i)
 		fmt.Println(")", note.Done[i])
 	}
+	
+	fmt.Println()
 }
 
 func DisplayNoteById(path string, id string) {
 	note, _ := getNoteById(path, id)
 	displayNote(note)
+}
+
+func DisplayNoteByTitle(path string, title string) {
+	id, found := getIdFromTitle(path, title)
+	if found {
+		DisplayNoteById(path, id)
+	}
 }
 
 /* Displays the given notes to std out. */
@@ -172,27 +183,19 @@ func DeleteNote(path string, id string) (deletedTitle string, found bool) {
 /* Given a title, delete the first note that has the same title. 
  * Return the id of the deleted note */
 func DeleteNoteByTitle(path string, title string) (deletedId string, found bool) {
-	notes := fetchNotes(path)
-	found = false
-	deletedId = ""
-	for i := 0; i < len(notes.Notes); i++ {
-		if notes.Notes[i].Title == title {
-			found = true
-			deletedId = notes.Notes[i].Id
-			notes.Notes = append(notes.Notes[:i], notes.Notes[i+1:]...)
-			break
-		}
+	deletedId, found = getIdFromTitle(path, title)
+	if (found) {
+		DeleteNote(path, deletedId)
 	}
-	writeNotes(notes, path)
 	return
 }
 
 /* Given the id of the note, check the nth item.  
  * return the item and if the operation was successful. */
-func CheckItem(path string, id string, n int) (string, bool) {
+func CheckItem(path string, id string, n int) (item string, success bool) {
 	note, foundNote := getNoteById(path, id)
 	foundItem := false
-	item := ""
+	item = ""
 	if (n < len(note.Todo) && n >= 0 && foundNote) {
 		foundItem = true
 		item = note.Todo[n]
@@ -200,14 +203,21 @@ func CheckItem(path string, id string, n int) (string, bool) {
 		note.Done = append(note.Done, item)
 	}
 
-	notes, success := replaceNote(path, id, note)
+	var notes Notes
+	notes, success = replaceNote(path, id, note)
 	if foundNote && foundItem && success {
 		writeNotes(notes, path)
-		fmt.Printf("If success: %v\n", success) // true here
 	}
-	fmt.Printf("Return success: %v\n", success) // false here
 
-	return item, success
+	return
+}
+
+func CheckItemByNoteTitle(path string, title string, n int) (item string, success bool) {
+	id, found := getIdFromTitle(path, title)
+	if (found) {
+		return CheckItem(path, id, n)
+	}
+	return "", found
 }
 
 
@@ -226,6 +236,7 @@ func parseNote(text string) Note {
 	if (lines[len(lines)-1] == "") {
 		lines = lines[0:len(lines)-1]
 	}
+
 	var note Note
 	note.Id = xid.New().String()
 	note.Title = lines[0]
@@ -268,6 +279,19 @@ func getNoteById(path string, id string) (note Note, found bool) {
 			found = true
 			note = notes.Notes[i]
 			break
+		}
+	}
+	return
+}
+
+func getIdFromTitle(path string, title string) (id string, found bool) {
+	notes := fetchNotes(path)
+	found = false
+	id = ""
+	for i := 0; i < len(notes.Notes); i++ {
+		if notes.Notes[i].Title == title {
+			found = true
+			id = notes.Notes[i].Id
 		}
 	}
 	return

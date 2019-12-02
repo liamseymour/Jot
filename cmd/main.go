@@ -80,22 +80,46 @@ func main() {
 		}
 
 	case "check": // check an item as complete
-		n, err := strconv.Atoi(os.Args[2])
-		id := os.Args[3]
+		var title bool
+		var nString string
+		var id string
+		if len(os.Args) == 5 && os.Args[2] == "-t" {
+			nString = os.Args[3]
+			id = os.Args[4]
+			title = true
+		} else if len(os.Args) == 4 {
+			nString = os.Args[2]
+			id = os.Args[3]
+			title = false
+		}
+		n, err := strconv.Atoi(nString)
+		
 		if err != nil || n < 0 {
 			fmt.Printf("'%v' is not an non-negative integer.", os.Args[2])
 			break
 		}
 		
-		item, success := jot.CheckItem(path, id, n)
+		var item string
+		var success bool
+		if title {
+			item, success = jot.CheckItemByNoteTitle(path, id, n)
 
-		if success {
-			fmt.Printf("Checked item: '%s' from note with id: '%s'\n", item, id)
+			if success {
+				fmt.Printf("Checked item: '%s' from note with title: '%s'\n", item, id)
+				jot.DisplayNoteByTitle(path, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, id)
+			}
 		} else {
-			fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
-		}
+			item, success = jot.CheckItem(path, id, n)
 
-		jot.DisplayNoteById(path, id)
+			if success {
+				fmt.Printf("Checked item: '%s' from note with id: '%s'\n", item, id)
+				jot.DisplayNoteById(path, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
+			}
+		}
 
 	case "uncheck": // uncheck an item
 		// TODO
