@@ -17,26 +17,16 @@ func main() {
 	notesPath, err := os.Executable()
 	check(err)
 
-	dataPath := filepath.Join(notesPath, "../../data/")
-	notesPath = filepath.Join(notesPath, "../../data/notes.json")
-	/* Debugging  */
-	dataPath = "C:/Users/liamg/go/src/jot/data/"
-	notesPath = "C:/Users/liamg/go/src/jot/data/notes.json"
-	/* catch */
-
-	// User has entered no arguments
-	if len(os.Args) == 1 {
-		// TODO help or Version number (or both)
-		return
-	}
-
+	dataPath := filepath.Join(notesPath, "../data/")
+	notesPath = filepath.Join(notesPath, "../data/notes.json")
+	
 	// Create string to run regex on, exlude first arg
 	// as it is always jot
 	commandString := strings.Join(os.Args[1:], " ")
 	switch {
 
-	// Help, -h, --help, help
-	case MatchStringAndCheck("^(-h|--help|help)( |$)", commandString):
+	// Help, -h, --help, help, or no args
+	case MatchStringAndCheck("^(-h|--help|help|)( |$)", commandString):
 		// TODO help
 		fmt.Println("Help unimplemented - you're out of luck.")
 

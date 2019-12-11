@@ -44,20 +44,21 @@
                 "Cycle through search results",
                 "Settings",
                 "Backup notes file",
-                "Refactor command parser",
                 "Refactor display out of jot.go",
                 "Improve search algorithm",
                 "Develop design principles",
                 "Generalize popout option to popout to the user's prefered text editor",
                 "(?) Ammend todo item",
-                "(?) Undo"
+                "(?) Undo",
+                "filepath problems"
             ],
             "done": [
                 "CheckItem function",
                 "UncheckItem function",
                 "AddItem function",
                 "RemoveItem function",
-                "Add note in sublime"
+                "Add note in sublime",
+                "Refactor command parser"
             ]
         },
         {
@@ -193,32 +194,33 @@
                 "If a_n converges then a_n is bounded",
                 "a_n -\u003e a \u003c=\u003e all a_n_k -\u003e a",
                 "if φ is an increasing function and φ(0) = 0 then the integral from 0 to a of φ(x)dx + the integral from 0 to b of φ^-1(x)dx \u003e= ab",
-                "every sequence has a monotonic sub-sequence",
                 "if a_n is increasing and bounded above then a_n converges",
-                "Bolzano-Weierstrass",
                 "Young's inequality",
                 "Holder's inequality",
                 "Minkowski's inequality",
-                "Every contact point of a set is either a limit point or an isolated point",
                 "The arbitrary intersection of closed sets is closed",
-                "The arbitrary union of open sets is open",
-                "The finite intersection of open sets is open",
-                "A set M is open \u003c=\u003e M^c is closed",
                 "f is continuous \u003c=\u003e the pre-image of every open set is open",
-                "K is compact -\u003e K is bounded",
-                "K is compact -\u003e K is closed",
                 "Nested interval theorem",
                 "Heine-Borel",
                 "f is continuous and and K is compact -\u003e f(K) is compact",
                 "if f:K -\u003e R then f contains a min and max",
                 "f is continuous on K and K is compact then f is uniformly continuous on K",
                 "L(f, P) \u003c= U(f, Q) for all partitions P, Q",
-                "Let f:[a, b] -\u003e R be bounded then f is integrable \u003c=\u003e for all ε \u003e 0 there exists a partition p such that U(f, P) - L(f, P) \u003c ε",
-                "Let f[a, b] -\u003e R be bounded and monotonic then f is integrable",
-                "Countable sets have measure zero",
                 "Lebesque's integration theorem"
             ],
-            "done": []
+            "done": [
+                "Let f[a, b] -\u003e R be bounded and monotonic then f is integrable",
+                "Let f:[a, b] -\u003e R be bounded then f is integrable \u003c=\u003e for all ε \u003e 0 there exists a partition p such that U(f, P) - L(f, P) \u003c ε",
+                "Countable sets have measure zero",
+                "K is compact -\u003e K is bounded",
+                "K is compact -\u003e K is closed",
+                "Every contact point of a set is either a limit point or an isolated point",
+                "A set M is open \u003c=\u003e M^c is closed",
+                "The arbitrary union of open sets is open",
+                "The finite intersection of open sets is open",
+                "every sequence has a monotonic sub-sequence",
+                "Bolzano-Weierstrass"
+            ]
         }
     ]
 }
