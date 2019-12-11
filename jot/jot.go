@@ -58,8 +58,8 @@ func writeNotes(notes Notes, path string) {
 	}
 }
 
-// Display
 
+/* 			   	 Display 			   */
 /* Displays the given note to std out. */
 func displayNote(note Note) {
 	// Header
@@ -319,8 +319,8 @@ func AddItemByNoteTitle(path string, title string, item string) (success bool) {
 func parseNote(text string) Note {
 
 	lines := strings.Split(text, "\n")
-	if lines[len(lines)-1] == "" {
-		lines = lines[0 : len(lines)-1]
+	for i := 0; i < len(lines); i++ {
+		lines[i] = strings.Trim(lines[i], "\r")
 	}
 
 	var note Note
