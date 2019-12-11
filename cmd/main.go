@@ -1,265 +1,179 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io/ioutil"
 	"jot/jot"
 	"os"
 	"os/exec"
-	"bufio"
-	"io/ioutil"
-	"strconv"
 	"path/filepath"
+	"regexp"
+	"strings"
 )
 
 func main() {
-	path, err := os.Executable()
+	notesPath, err := os.Executable()
 	check(err)
-	//path = filepath.Join(path, "../../data/notes.json")
-	/* Debugging */dataPath := "C:/Users/liamg/go/src/jot/data/"
-	/* Debugging */path = "C:/Users/liamg/go/src/jot/data/notes.json"
+
+	dataPath := filepath.Join(notesPath, "../../data/")
+	notesPath = filepath.Join(notesPath, "../../data/notes.json")
+	/* Debugging  */
+	dataPath = "C:/Users/liamg/go/src/jot/data/"
+	notesPath = "C:/Users/liamg/go/src/jot/data/notes.json"
+	/* catch */
 
 	// User has entered no arguments
 	if len(os.Args) == 1 {
-		// TODO help
+		// TODO help or Version number (or both)
 		return
-	} 
+	}
 
-	switch os.Args[1] {
-	
-	case "-h", "help":
+	// Create string to run regex on, exlude first arg
+	// as it is always jot
+	commandString := strings.Join(os.Args[1:], " ")
+	switch {
+
+	// Help, -h, --help, help
+	case MatchStringAndCheck("^(-h|--help|help)( |$)", commandString):
 		// TODO help
+		fmt.Println("Help unimplemented - you're out of luck.")
 
-	case "ls": // display notes
-		if len(os.Args) == 2 {
-			jot.DisplayLastNote(path)
-		} else {
-			switch os.Args[2] { // list with an optional
-			case "-a", "--all": // display all notes
-				jot.DisplayAllNotes(path)
-			}
+	// List, ls
+	case MatchStringAndCheck("^ls( |$)", commandString):
+		displayByTitle := false
+		displayAll := false
+		hasArgument := false
+
+		// Parse command
+		// Display using title
+		if MatchStringAndCheck("^ls( -.+)* -t .+", commandString) {
+			displayByTitle = true
+		}
+		// Display all
+		if MatchStringAndCheck("^ls( -.+)* -a( )?", commandString) {
+			displayAll = true
+		}
+		// Some non-option argument is passed
+		if MatchStringAndCheck("^ls( -.+)* [^-].*", commandString) {
+			hasArgument = true
 		}
 
-	case "search": // search for a note
-		if len(os.Args) == 3 {
-			jot.DisplayNotesBySearch(path, os.Args[2])
+		// Execute
+		switch {
+		case displayAll:
+			jot.DisplayAllNotes(notesPath)
+		case displayByTitle:
+			jot.DisplayNoteByTitle(notesPath, os.Args[len(os.Args)-1])
+		case hasArgument:
+			jot.DisplayNoteById(notesPath, os.Args[len(os.Args)-1])
+		default:
+			// Todo What should default ls do?
+			jot.DisplayLastNote(notesPath)
 		}
-
-	case "new": // add a new note
-		note := ""
-		if len(os.Args) >= 3 && os.Args[2] == "-p" {
-			// (p)opout, in our case use sublime text to write the note
-			title := ""
-			if len(os.Args) == 4 { // If a title is supplied, use it
-				title = os.Args[3]
-			}
-			note = readNoteFromSublime(dataPath, title)
-		} else {
-			if len(os.Args) == 3 { // If a title is supplied, use it
-				note += os.Args[2] + "\n"
-				note += readNoteFromConsole(false, os.Args[2])
-			} else {
-				note = readNoteFromConsole(true, "")
-			}
-		}
-
-		jot.NewNote(path, note)
-		fmt.Println("Note added:")
-		jot.DisplayLastNote(path)
-
-	case "del", "delete", "remove": // remove a note
-		if len(os.Args) == 2 {
-			fmt.Println("Please specify note ID to be deleted.")
+	// Search keywords
+	case MatchStringAndCheck("^search( |$)", commandString):
+		if len(os.Args) < 3 {
+			fmt.Println("Insufficient arguments. Use \"jot help search\" for usage.")
 			break
 		}
-		if os.Args[2] == "-t" || os.Args[2] == "--title" {
-			// Delete by title
-			id, found := jot.DeleteNoteByTitle(path, os.Args[3])
-			if (found) {
-				fmt.Printf("Note deleted with id: '%s'", id)
+		jot.DisplayNotesBySearch(notesPath, strings.Join(os.Args[2:], " "))
+
+	// New Note
+	case MatchStringAndCheck("^new( |$)", commandString):
+		popOut := false
+		title := ""
+
+		// Parse command
+		// Popout
+		if MatchStringAndCheck("^new( -.+)* -p( .)*", commandString) {
+			popOut = true
+		}
+		// Title passed
+		if MatchStringAndCheck("^new( -.+)* [^-].*", commandString) {
+			title = os.Args[len(os.Args)-1]
+		}
+
+		// Execute
+		var note string
+		switch {
+		case !popOut:
+			note = readNoteFromConsole(title)
+		case popOut:
+			note = readNoteFromTextEditor(dataPath, title)
+		}
+
+		// Always run
+		newNoteId := jot.NewNote(notesPath, note)
+		fmt.Printf("New note created with id: %s", newNoteId)
+		fmt.Println()
+		// Here we could get away with "DisplayLastNote" but its probably more
+		// reliable to display by ID.
+		jot.DisplayNoteById(notesPath, newNoteId)
+
+	// Delete a note
+	case MatchStringAndCheck("^(del|delete|rm|remove)( |$)", commandString):
+		useTitle := false
+		// Parse command
+		// Bad call
+		if !MatchStringAndCheck("^(del|delete|rm|remove)( -.+)* [^-].*", commandString) {
+			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
+			fmt.Println()
+			return
+		}
+		// Delete by title
+		if MatchStringAndCheck("^(del|delete|rm|remove)( -.+)* -t( .)*", commandString) {
+			useTitle = true
+		}
+
+		switch {
+		case useTitle:
+			title := os.Args[len(os.Args)-1]
+			id, found := jot.DeleteNoteByTitle(path, title)
+			if found {
+				fmt.Printf("Note deleted with id: %s", id)
 				fmt.Println()
 			} else {
-				fmt.Println("No note found.")
+				fmt.Printf("No note found with title: %s", title)
+				fmt.Println()
 			}
-		} else {
-			// Delete by ID
-			title, found := jot.DeleteNote(path, os.Args[2])
-			if (found) {
-				fmt.Printf("Note deleted with title: '%s'", title)
+
+		default:
+			id := os.Args[len(os.Args)-1]
+			title, found := jot.DeleteNoteById(path, id)
+			if found {
+				fmt.Printf("Note deleted with title: %s", title)
 				fmt.Println()
 			} else {
-				fmt.Println("No note found.")
+				fmt.Printf("No note found with id: %s", id)
+				fmt.Println()
 			}
 		}
 
-	case "check": // check an item as complete
-		var title bool
-		var nString string
-		var id string
-		if len(os.Args) == 5 && os.Args[2] == "-t" {
-			nString = os.Args[3]
-			id = os.Args[4]
-			title = true
-		} else if len(os.Args) == 4 {
-			nString = os.Args[2]
-			id = os.Args[3]
-			title = false
-		}
-		n, err := strconv.Atoi(nString)
-		
-		if err != nil || n < 0 {
-			fmt.Printf("'%v' is not an non-negative integer.", os.Args[2])
-			break
-		}
-		
-		var item string
-		var success bool
-		if title {
-			item, success = jot.CheckItemByNoteTitle(path, id, n)
-
-			if success {
-				fmt.Printf("Checked item: '%s' from note with title: '%s'\n", item, id)
-				jot.DisplayNoteByTitle(path, id)
-			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, id)
-			}
-		} else {
-			item, success = jot.CheckItem(path, id, n)
-
-			if success {
-				fmt.Printf("Checked item: '%s' from note with id: '%s'\n", item, id)
-				jot.DisplayNoteById(path, id)
-			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
-			}
-		}
-
-	case "uncheck": // uncheck an item
-		var title bool
-		var nString string
-		var id string
-		if len(os.Args) == 5 && os.Args[2] == "-t" {
-			nString = os.Args[3]
-			id = os.Args[4]
-			title = true
-		} else if len(os.Args) == 4 {
-			nString = os.Args[2]
-			id = os.Args[3]
-			title = false
-		}
-		n, err := strconv.Atoi(nString)
-		
-		if err != nil || n < 0 {
-			fmt.Printf("'%v' is not an non-negative integer.", os.Args[2])
-			break
-		}
-		
-		var item string
-		var success bool
-		if title {
-			item, success = jot.UnCheckItemByNoteTitle(path, id, n)
-
-			if success {
-				fmt.Printf("Unchecked item: '%s' from note with title: '%s'\n", item, id)
-				jot.DisplayNoteByTitle(path, id)
-			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, id)
-			}
-		} else {
-			item, success = jot.UnCheckItem(path, id, n)
-
-			if success {
-				fmt.Printf("Unchecked item: '%s' from note with id: '%s'\n", item, id)
-				jot.DisplayNoteById(path, id)
-			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
-			}
-		}
-
-	case "add": // add a item to the checklist
-		var title bool
-		var item string
-		var id string
-		if len(os.Args) == 5 && os.Args[2] == "-t" {
-			item = os.Args[3]
-			id = os.Args[4]
-			title = true
-		} else if len(os.Args) == 4 {
-			item = os.Args[2]
-			id = os.Args[3]
-			title = false
-		}
-		
-		var success bool
-		if title {
-			success = jot.AddItemByNoteTitle(path, id, item)
-
-			if success {
-				fmt.Printf("Added item: '%s' to note with title: '%s'\n", item, id)
-				jot.DisplayNoteByTitle(path, id)
-			} else {
-				fmt.Printf("Cannot find note with title: '%s'\n", id)
-			}
-		} else {
-			
-			success = jot.AddItem(path, id, item)
-
-			if success {
-				fmt.Printf("Added item: '%s' to note with id: '%s'\n", item, id)
-				jot.DisplayNoteById(path, id)
-			} else {
-				fmt.Printf("Cannot find note with id: '%s'\n", id)
-			}
-		}
-
-	case "scratch": // discard an item from the checklist
-		var title bool
-		var nString string
-		var id string
-		if len(os.Args) == 5 && os.Args[2] == "-t" {
-			nString = os.Args[3]
-			id = os.Args[4]
-			title = true
-		} else if len(os.Args) == 4 {
-			nString = os.Args[2]
-			id = os.Args[3]
-			title = false
-		}
-		n, err := strconv.Atoi(nString)
-		
-		if err != nil || n < 0 {
-			fmt.Printf("'%v' is not an non-negative integer.", os.Args[2])
-			break
-		}
-		
-		var item string
-		var success bool
-		if title {
-			item, success = jot.RemoveItemByNoteTitle(path, id, n)
-
-			if success {
-				fmt.Printf("Removed item: '%s' from note with title: '%s'\n", item, id)
-				jot.DisplayNoteByTitle(path, id)
-			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, id)
-			}
-		} else {
-			item, success = jot.RemoveItem(path, id, n)
-
-			if success {
-				fmt.Printf("Removed item: '%s' from note with id: '%s'\n", item, id)
-				jot.DisplayNoteById(path, id)
-			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
-			}
-		}
-
+	// No such command
 	default:
-		fmt.Printf("Unkown command: '%v'. Use 'jot help' to see a list of available commands.", os.Args[1])
+		fmt.Printf("Unknown command: '%v'. Use 'jot help' to see a list of available commands.", os.Args[1])
+	}
+
+}
+
+func MatchStringAndCheck(pattern string, string string) bool {
+	match, err := regexp.MatchString(pattern, string)
+	if err != nil {
+		fmt.Println("Command parsing error.")
+		panic(err.Error())
+	}
+	return match
+}
+
+func check(err error) {
+	if err != nil {
+		panic(err.Error())
 	}
 }
 
-func readNoteFromConsole(getTitle bool, title string) string {
-	if getTitle {
+func readNoteFromConsole(title string) string {
+	if title == "" {
 		fmt.Print("New Note Title: ")
 	} else {
 		fmt.Printf("%v: \n", title)
@@ -275,12 +189,15 @@ func readNoteFromConsole(getTitle bool, title string) string {
 	return s
 }
 
-func readNoteFromSublime(path, title string) string {
+func readNoteFromTextEditor(path, title string) string {
+	// To-do generalize text editor, pull path from a settings file
+	// find the available programs etc...
+
 	// create text file
 	fp := filepath.Join(path, "input.txt")
 	file, err := os.Create(fp)
 	check(err)
-	titleBytes := []byte(title + "\nThe first line is the title. Bullet points are lines that begin with \" - \".")
+	titleBytes := []byte(title)
 	_, err = file.Write(titleBytes)
 	check(err)
 	file.Close()
@@ -302,11 +219,5 @@ func readNoteFromSublime(path, title string) string {
 	err = os.Remove(fp)
 	check(err)
 
-	return string(bytes) 
-}
-
-func check(err error) {
-	if err != nil {
-		panic(err.Error())
-	}
+	return string(bytes)
 }

@@ -3,22 +3,21 @@ package jot
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gookit/color"
+	"github.com/rs/xid"
 	"io/ioutil"
 	"os"
 	"strings"
 	"time"
-	"github.com/rs/xid"
-	"github.com/gookit/color"
 )
 
 // Reading and writting
-
 
 /* An object representing a single note. */
 type Note struct {
 	Id    string   `json:"id"`
 	Title string   `json:"title"`
-	Time  int64  `json:"time"`
+	Time  int64    `json:"time"`
 	Lines []string `json:"lines"`
 	Todo  []string `json:"to-do"`
 	Done  []string `json:"done"`
@@ -99,7 +98,7 @@ func displayNote(note Note) {
 		fmt.Printf("%5v", i)
 		fmt.Println(")", note.Done[i])
 	}
-	
+
 	fmt.Println()
 }
 
@@ -151,7 +150,6 @@ func DisplayNotesBySearch(path string, search string) {
 	displayNotes(filtered)
 }
 
-
 // Management
 
 /* Given a string, make a new note and record it. Return the id of the new note */
@@ -180,26 +178,26 @@ func DeleteNote(path string, id string) (deletedTitle string, found bool) {
 	return
 }
 
-/* Given a title, delete the first note that has the same title. 
+/* Given a title, delete the first note that has the same title.
  * Return the id of the deleted note */
 func DeleteNoteByTitle(path string, title string) (deletedId string, found bool) {
 	deletedId, found = getIdFromTitle(path, title)
-	if (found) {
+	if found {
 		DeleteNote(path, deletedId)
 	}
 	return
 }
 
-/* Given the id of the note, check the nth item.  
+/* Given the id of the note, check the nth item.
  * return the item and if the operation was successful. */
 func CheckItem(path string, id string, n int) (item string, success bool) {
 	note, foundNote := getNoteById(path, id)
 	foundItem := false
 	item = ""
-	if (n < len(note.Todo) && n >= 0 && foundNote) {
+	if n < len(note.Todo) && n >= 0 && foundNote {
 		foundItem = true
 		item = note.Todo[n]
-		note.Todo = append(note.Todo[:n], note.Todo[n + 1:]...)
+		note.Todo = append(note.Todo[:n], note.Todo[n+1:]...)
 		note.Done = append(note.Done, item)
 	}
 
@@ -217,22 +215,22 @@ func CheckItem(path string, id string, n int) (item string, success bool) {
 
 func CheckItemByNoteTitle(path string, title string, n int) (item string, success bool) {
 	id, found := getIdFromTitle(path, title)
-	if (found) {
+	if found {
 		return CheckItem(path, id, n)
 	}
 	return "", found
 }
 
-/* Given the id of the note, uncheck the nth item.  
+/* Given the id of the note, uncheck the nth item.
  * return the item and if the operation was successful. */
 func UnCheckItem(path string, id string, n int) (item string, success bool) {
 	note, foundNote := getNoteById(path, id)
 	foundItem := false
 	item = ""
-	if (n < len(note.Done) && n >= 0 && foundNote) {
+	if n < len(note.Done) && n >= 0 && foundNote {
 		foundItem = true
 		item = note.Done[n]
-		note.Done = append(note.Done[:n], note.Done[n + 1:]...)
+		note.Done = append(note.Done[:n], note.Done[n+1:]...)
 		note.Todo = append(note.Todo, item)
 	}
 
@@ -249,22 +247,22 @@ func UnCheckItem(path string, id string, n int) (item string, success bool) {
 
 func UnCheckItemByNoteTitle(path string, title string, n int) (item string, success bool) {
 	id, found := getIdFromTitle(path, title)
-	if (found) {
+	if found {
 		return UnCheckItem(path, id, n)
 	}
 	return "", found
 }
 
-/* Given the id of the note, uncheck the nth item.  
+/* Given the id of the note, uncheck the nth item.
  * return the item and if the operation was successful. */
 func RemoveItem(path string, id string, n int) (item string, success bool) {
 	note, foundNote := getNoteById(path, id)
 	foundItem := false
 	item = ""
-	if (n < len(note.Todo) && n >= 0 && foundNote) {
+	if n < len(note.Todo) && n >= 0 && foundNote {
 		foundItem = true
 		item = note.Todo[n]
-		note.Todo = append(note.Todo[:n], note.Todo[n + 1:]...)
+		note.Todo = append(note.Todo[:n], note.Todo[n+1:]...)
 	}
 
 	success = false
@@ -280,13 +278,13 @@ func RemoveItem(path string, id string, n int) (item string, success bool) {
 
 func RemoveItemByNoteTitle(path string, title string, n int) (item string, success bool) {
 	id, found := getIdFromTitle(path, title)
-	if (found) {
+	if found {
 		return RemoveItem(path, id, n)
 	}
 	return "", found
 }
 
-/* Given the id of the note, uncheck the nth item.  
+/* Given the id of the note, uncheck the nth item.
  * return the item and if the operation was successful. */
 func AddItem(path string, id string, item string) (success bool) {
 	note, foundNote := getNoteById(path, id)
@@ -305,16 +303,14 @@ func AddItem(path string, id string, item string) (success bool) {
 
 func AddItemByNoteTitle(path string, title string, item string) (success bool) {
 	id, found := getIdFromTitle(path, title)
-	if (found) {
+	if found {
 		return AddItem(path, id, item)
 	}
 	return found
 }
 
-
 //func AddItem(id string, listItem int) {;}
 //func RemoveItem(id string, listItem int) string {;}
-
 
 // Helper
 
@@ -323,8 +319,8 @@ func AddItemByNoteTitle(path string, title string, item string) (success bool) {
 func parseNote(text string) Note {
 
 	lines := strings.Split(text, "\n")
-	if (lines[len(lines)-1] == "") {
-		lines = lines[0:len(lines)-1]
+	if lines[len(lines)-1] == "" {
+		lines = lines[0 : len(lines)-1]
 	}
 
 	var note Note

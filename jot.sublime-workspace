@@ -4,6 +4,102 @@
 		"selected_items":
 		[
 			[
+				"Pr",
+				"Printf"
+			],
+			[
+				"Light",
+				"LightColor"
+			],
+			[
+				"light",
+				"LightColor"
+			],
+			[
+				"Print",
+				"Println"
+			],
+			[
+				"use",
+				"useTitle"
+			],
+			[
+				"notes",
+				"notesPath"
+			],
+			[
+				"Dis",
+				"DisplayLastNote"
+			],
+			[
+				"has",
+				"hasArgument"
+			],
+			[
+				"dis",
+				"displayByTitle"
+			],
+			[
+				"new",
+				"newNoteId"
+			],
+			[
+				"comm",
+				"commandString"
+			],
+			[
+				"displ",
+				"displayByTitle"
+			],
+			[
+				"Displ",
+				"displayAll"
+			],
+			[
+				"ci",
+				"commandString"
+			],
+			[
+				"pa",
+				"pattern"
+			],
+			[
+				"matc",
+				"MatchString"
+			],
+			[
+				"read",
+				"readNoteFromSublime"
+			],
+			[
+				"titl",
+				"titleBytes"
+			],
+			[
+				"found",
+				"foundItem"
+			],
+			[
+				"foudn",
+				"foundNote"
+			],
+			[
+				"get",
+				"getIdFromTitle"
+			],
+			[
+				"s",
+				"success"
+			],
+			[
+				"D",
+				"DeleteNote"
+			],
+			[
+				"not",
+				"noteToString"
+			],
+			[
 				"file",
 				"filepath"
 			],
@@ -14,10 +110,6 @@
 			[
 				"del",
 				"deletedTitle"
-			],
-			[
-				"Dis",
-				"DisplayLastNote"
 			],
 			[
 				"rea",
@@ -140,10 +232,6 @@
 				"NextDouble()\tdouble"
 			],
 			[
-				"new",
-				"newProjectile\tProjectile"
-			],
-			[
 				"pr",
 				"projectileCount\tfloat"
 			],
@@ -170,10 +258,6 @@
 			[
 				"Req",
 				"RequireComponent(Type requiredComponent)\tRequireComponent(Type requiredComponent)"
-			],
-			[
-				"get",
-				"GetComponent<T>()\tT"
 			],
 			[
 				"Vect",
@@ -210,10 +294,6 @@
 			[
 				"displa",
 				"displayNotes"
-			],
-			[
-				"s",
-				"sentence"
 			],
 			[
 				"paddi",
@@ -434,80 +514,34 @@
 			[
 				"word",
 				"wordCount"
-			],
-			[
-				"Inde",
-				"InterruptedException"
-			],
-			[
-				"ro",
-				"rotateRight"
-			],
-			[
-				"is",
-				"isBlack"
-			],
-			[
-				"Pr",
-				"PrintWriter"
-			],
-			[
-				"Wor",
-				"WordTable"
-			],
-			[
-				"wor",
-				"WordTree"
-			],
-			[
-				"Word",
-				"WordTree"
-			],
-			[
-				"se",
-				"settingsFileName"
-			],
-			[
-				"write",
-				"writeToJson"
-			],
-			[
-				"st",
-				"startStr"
-			],
-			[
-				"comman",
-				"commandList"
-			],
-			[
-				"die",
-				"dieTemp"
-			],
-			[
-				"n",
-				"numTemp"
-			],
-			[
-				"comma",
-				"commandList"
-			],
-			[
-				"has",
-				"hashCode"
-			],
-			[
-				"re",
-				"return"
 			]
 		]
 	},
 	"buffers":
 	[
 		{
+			"file": "cmd/old_main.go",
+			"settings":
+			{
+				"buffer_size": 7333,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "cmd/main.go",
+			"settings":
+			{
+				"buffer_size": 5172,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "jot/jot.go",
 			"settings":
 			{
-				"buffer_size": 4998,
+				"buffer_size": 9248,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -516,24 +550,8 @@
 			"file": "data/notes.json",
 			"settings":
 			{
-				"buffer_size": 871,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "cmd/main.go",
-			"settings":
-			{
-				"buffer_size": 2263,
+				"buffer_size": 5264,
 				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "jot.sublime-project",
-			"settings":
-			{
-				"buffer_size": 45,
 				"line_ending": "Unix"
 			}
 		}
@@ -550,16 +568,36 @@
 		"selected_items":
 		[
 			[
+				"anaconda",
+				"AnacondaGO: Explore Packages"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"syntax",
+				"Set Syntax: HLSL"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"rena",
+				"Rename File"
+			],
+			[
+				"renam",
+				"Rename File"
+			],
+			[
 				"omnis",
 				"OmniSharpSublime: Type Lookup"
 			],
 			[
 				"package ins",
 				"Package Control: Install Package"
-			],
-			[
-				"rena",
-				"Rename File"
 			],
 			[
 				"re",
@@ -572,10 +610,6 @@
 			[
 				"color",
 				"UI: Select Color Scheme"
-			],
-			[
-				"install",
-				"Package Control: Install Package"
 			],
 			[
 				"packa",
@@ -612,17 +646,30 @@
 	"expanded_folders":
 	[
 		"/C/Users/liamg/go/src/jot",
+		"/C/Users/liamg/go/src/jot/bin",
 		"/C/Users/liamg/go/src/jot/cmd",
 		"/C/Users/liamg/go/src/jot/data",
 		"/C/Users/liamg/go/src/jot/jot"
 	],
 	"file_history":
 	[
+		"/C/Users/liamg/Documents/Otterbein/CS Projects/Assignment 4/Assignment 4/Content/Main.fx",
+		"/C/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Simple.fx",
+		"/C/Users/liamg/source/repos/COMP-4290-Project-3/Pong/Content/Point.fx",
+		"/C/Users/liamg/source/repos/COMP-4290-Project-3/.git/COMMIT_EDITMSG",
+		"/C/Users/liamg/AppData/Local/Temp/7zO451CA3A7/Main.fx",
+		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3700 - Web Development/Projects/puzzles.json",
+		"/C/Users/liamg/go/src/jot/cmd/main.go",
+		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3200 - Languages and Machines/Projects/project 3/poly.ml",
+		"/C/Users/liamg/go/src/jot/jot/jot.go",
+		"/C/Users/liamg/go/src/jot/data/notes.json",
+		"/C/Users/liamg/go/src/jot/data/input.txt",
+		"/C/Users/liamg/go/src/advent-of-code-2019/d2p1/main.go",
+		"/C/home/liam/.ocamlinit",
 		"/C/Users/liamg/go/src/jot/build.py",
 		"/C/Users/liamg/go/src/jot/jot.go",
 		"/C/Users/liamg/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/profiles.json",
 		"/C/Users/liamg/go/src/jot/cmd/temp.go",
-		"/C/Users/liamg/go/src/jot/cmd/main.go",
 		"/C/Users/liamg/go/src/jot/jot.sublime-project",
 		"/C/Users/liamg/Documents/Programs/Unity/Sabastian Tutorial/Sabastian Tutorial.sublime-project",
 		"/C/Users/liamg/Documents/Programs/Unity/Sabastian Tutorial/Assets/Scripts/PlayerController.cs",
@@ -633,7 +680,6 @@
 		"/C/Users/liamg/New Unity Project/Library/PackageCache/com.unity.render-pipelines.core@6.9.0/Runtime/Volume/VolumeProfile.cs",
 		"/C/Users/liamg/go/src/jot/data/json-specs.txt",
 		"/C/Users/liamg/go/src/jot/data/temp-notes.json",
-		"/C/Users/liamg/go/src/jot/data/notes.json",
 		"/C/Users/liamg/go/main.go",
 		"/C/Users/liamg/go/src/jot/model.go",
 		"/C/Users/liamg/Documents/Programs/Go/Jot/temp-notes.json",
@@ -651,7 +697,6 @@
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Homework/Skybox.fx",
 		"/C/Users/liamg/source/repos/Assignment3/Assignment3/Game1.cs",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Homework/Assignment 4/Assignment 4/Content/Skybox.fx",
-		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3200 - Languages and Machines/Projects/project 3/poly.ml",
 		"/C/Users/liamg/source/repos/Assignment3/Assignment3/Program.cs",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 3200 - Languages and Machines/Projects/project 3/mockup.py",
 		"/C/Users/liamg/Documents/Otterbein/Semester 5/COMP 4290 - Computer Graphics/Homework/Assignment 4/Assignment 4/Content/File.fx",
@@ -735,7 +780,7 @@
 	],
 	"find":
 	{
-		"height": 41.0
+		"height": 28.0
 	},
 	"find_in_files":
 	{
@@ -746,9 +791,13 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"path",
+			"readNoteFromSublime",
+			"check(err)",
+			"check",
 			"notePath",
 			"NOTE_PATH",
 			"background",
@@ -756,7 +805,7 @@
 			"\"data/notes.json\""
 		],
 		"highlight": true,
-		"in_selection": false,
+		"in_selection": true,
 		"preserve_case": false,
 		"regex": false,
 		"replace_history":
@@ -765,30 +814,30 @@
 		"reverse": false,
 		"show_context": true,
 		"use_buffer2": true,
-		"whole_word": false,
+		"whole_word": true,
 		"wrap": true
 	},
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "jot/jot.go",
+					"file": "cmd/old_main.go",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4998,
+						"buffer_size": 7333,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								243,
-								243
+								5285,
+								5285
 							]
 						],
 						"settings":
@@ -797,61 +846,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "data/notes.json",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 871,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								596,
-								596
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 3990.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 2,
+					"buffer": 1,
 					"file": "cmd/main.go",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2263,
+						"buffer_size": 5172,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								300,
-								300
+								3506,
+								3506
 							]
 						],
 						"settings":
@@ -867,28 +882,59 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "jot.sublime-project",
-					"semi_transient": true,
+					"buffer": 2,
+					"file": "jot/jot.go",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 45,
+						"buffer_size": 9248,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								45,
-								45
+								374,
+								374
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+							"syntax": "Packages/Go/Go.sublime-syntax",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "data/notes.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5264,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1813.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -899,7 +945,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 29.0
+		"height": 28.0
 	},
 	"input":
 	{
@@ -914,18 +960,11 @@
 				0,
 				1,
 				1
-			],
-			[
-				1,
-				0,
-				2,
-				1
 			]
 		],
 		"cols":
 		[
 			0.0,
-			0.5,
 			1.0
 		],
 		"rows":
@@ -951,7 +990,7 @@
 	"project": "jot.sublime-project",
 	"replace":
 	{
-		"height": 54.0
+		"height": 52.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -962,7 +1001,11 @@
 		[
 			[
 				"",
-				"jot.go"
+				"cmd\\oldmain.go"
+			],
+			[
+				"jot",
+				"jot\\jot.go"
 			],
 			[
 				"spaw",
@@ -1025,7 +1068,7 @@
 	"show_open_files": true,
 	"show_tabs": false,
 	"side_bar_visible": true,
-	"side_bar_width": 196.0,
+	"side_bar_width": 176.0,
 	"status_bar_visible": false,
 	"template_settings":
 	{
