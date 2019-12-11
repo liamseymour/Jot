@@ -151,7 +151,7 @@ func main() {
 			}
 		}
 
-	// checking an item on the to-do / check list
+	// Checking an item on the to-do / check list
 	case MatchStringAndCheck("^(check)( |$)", commandString):
 		// zero or one arguments given to check
 		if MatchStringAndCheck("^check$", commandString) {
@@ -182,10 +182,12 @@ func main() {
 			item, success := jot.CheckItemByNoteTitle(notesPath, title, n)
 
 			if success {
-				fmt.Printf("Checked item: '%s' from note with title: '%s'\n", item, title)
+				fmt.Printf("Checked item: '%s' from note with title: '%s'", item, title)
+				fmt.Println()
 				jot.DisplayNoteByTitle(notesPath, title)
 			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, title)
+				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
+				fmt.Println()
 			}
 
 		// No options
@@ -194,16 +196,18 @@ func main() {
 			item, success := jot.CheckItem(notesPath, id, n)
 
 			if success {
-				fmt.Printf("Checked item: '%s' from note with id: '%s'\n", item, id)
+				fmt.Printf("Checked item: '%s' from note with id: '%s'", item, id)
+				fmt.Println()
 				jot.DisplayNoteById(notesPath, id)
 			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
+				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
+				fmt.Println()
 			}
 		}
 
-	// unchecking an item on the to-do / check list
+	// Unchecking an item on the to-do / check list
 	case MatchStringAndCheck("^(uncheck)( |$)", commandString):
-		// zero or one arguments given to check
+		// zero or one arguments given to uncheck
 		if MatchStringAndCheck("^uncheck$", commandString) {
 			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
 			fmt.Println()
@@ -232,10 +236,12 @@ func main() {
 			item, success := jot.UnCheckItemByNoteTitle(notesPath, title, n)
 
 			if success {
-				fmt.Printf("Unchecked item: '%s' from note with title: '%s'\n", item, title)
+				fmt.Printf("Unchecked item: '%s' from note with title: '%s'", item, title)
+				fmt.Println()
 				jot.DisplayNoteByTitle(notesPath, title)
 			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, title)
+				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
+				fmt.Println()
 			}
 
 		// No options
@@ -244,18 +250,116 @@ func main() {
 			item, success := jot.UnCheckItem(notesPath, id, n)
 
 			if success {
-				fmt.Printf("Unchecked item: '%s' from note with id: '%s'\n", item, id)
+				fmt.Printf("Unchecked item: '%s' from note with id: '%s'", item, id)
+				fmt.Println()
 				jot.DisplayNoteById(notesPath, id)
 			} else {
-				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
+				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
+				fmt.Println()
 			}
 		}
 
-	// No such command
-	default:
-		fmt.Printf("Unknown command: '%v'. Use 'jot help' to see a list of available commands.", os.Args[1])
-	}
+	// Add an item to the to-do / check list
+	case MatchStringAndCheck("^(add)( |$)", commandString):
+		// zero or one arguments given to add
+		if MatchStringAndCheck("^add$", commandString) {
+			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
+			fmt.Println()
+			return
+		}
 
+		useTitle := false
+		// Reference note by title
+		if MatchStringAndCheck("^(add)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
+			useTitle = true
+		}
+
+		item := os.Args[len(os.Args) - 1]
+		
+		switch {
+		// Reference note by title
+		case useTitle:
+			title := os.Args[len(os.Args) - 2]
+			success := jot.AddItemByNoteTitle(notesPath, title, item)
+
+			if success {
+				fmt.Printf("Added item: '%s' to note with title: '%s'", item, title)
+				fmt.Println()
+				jot.DisplayNoteByTitle(notesPath, title)
+			} else {
+				fmt.Printf("Cannot find note with title: '%s'", title)
+				fmt.Println()
+			}
+
+		// No options
+		default:
+			id := os.Args[len(os.Args) - 2]
+			success := jot.AddItem(notesPath, id, item)
+
+			if success {
+				fmt.Printf("Checked item: '%s' from note with id: '%s'", item, id)
+				fmt.Println()
+				jot.DisplayNoteById(notesPath, id)
+			} else {
+				fmt.Printf("Cannot find note with id: '%s'", id)
+				fmt.Println()
+			}
+		}
+
+	// Remove an item from the to-do / check list
+	case MatchStringAndCheck("^(scratch)( |$)", commandString):
+		// zero or one arguments given to scratch
+		if MatchStringAndCheck("^scratch$", commandString) {
+			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
+			fmt.Println()
+			return
+		}
+		useTitle := false
+		
+		// Reference note by title
+		if MatchStringAndCheck("^(scratch)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
+			useTitle = true
+		}
+
+
+		nString := os.Args[len(os.Args) - 1] 
+		n, err := strconv.Atoi(nString)
+		
+		if err != nil || n < 0 {
+			fmt.Printf("'%v' is not an non-negative integer.", nString)
+			return
+		}
+		
+		switch {
+		// Reference note by title
+		case useTitle:
+			title := os.Args[len(os.Args) - 2]
+			item, success := jot.RemoveItemByNoteTitle(notesPath, title, n)
+
+			if success {
+				fmt.Printf("Removed item: '%s' from note with title: '%s'", item, title)
+				fmt.Println()
+				jot.DisplayNoteByTitle(notesPath, title)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
+				fmt.Println()
+			}
+
+		// No options
+		default:
+			id := os.Args[len(os.Args) - 2]
+			item, success := jot.RemoveItem(notesPath, id, n)
+
+			if success {
+				fmt.Printf("Removed item: '%s' from note with id: '%s'", item, id)
+				fmt.Println()
+				jot.DisplayNoteById(notesPath, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
+				fmt.Println()
+			}
+		}
+	}
 }
 
 /*************Helper Functions*************/
@@ -279,14 +383,14 @@ func readNoteFromConsole(title string) string {
 	if title == "" {
 		fmt.Print("New Note Title: ")
 	} else {
-		fmt.Printf("%v: \n", title)
+		fmt.Printf("%v: ", title)
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	s := ""
 
 	for scanner.Scan() {
 		s += scanner.Text()
-		s += "\n"
+		s += ""
 	}
 
 	return s
