@@ -91,7 +91,7 @@ func main() {
 			popOut = true
 		}
 		// Title passed
-		if MatchStringAndCheck("^new( -.+)* [[:word:]]*", commandString) {
+		if MatchStringAndCheck("^new( -.+)* [[:word:]]+", commandString) {
 			title = os.Args[len(os.Args)-1]
 		}
 
@@ -201,7 +201,55 @@ func main() {
 			}
 		}
 
+	// unchecking an item on the to-do / check list
+	case MatchStringAndCheck("^(uncheck)( |$)", commandString):
+		// zero or one arguments given to check
+		if MatchStringAndCheck("^uncheck$", commandString) {
+			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
+			fmt.Println()
+			return
+		}
+		useTitle := false
+		
+		// Reference note by title
+		if MatchStringAndCheck("^(uncheck)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
+			useTitle = true
+		}
 
+
+		nString := os.Args[len(os.Args) - 1] 
+		n, err := strconv.Atoi(nString)
+		
+		if err != nil || n < 0 {
+			fmt.Printf("'%v' is not an non-negative integer.", nString)
+			return
+		}
+		
+		switch {
+		// Reference note by title
+		case useTitle:
+			title := os.Args[len(os.Args) - 2]
+			item, success := jot.UnCheckItemByNoteTitle(notesPath, title, n)
+
+			if success {
+				fmt.Printf("Unchecked item: '%s' from note with title: '%s'\n", item, title)
+				jot.DisplayNoteByTitle(notesPath, title)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'\n", n, title)
+			}
+
+		// No options
+		default:
+			id := os.Args[len(os.Args) - 2]
+			item, success := jot.UnCheckItem(notesPath, id, n)
+
+			if success {
+				fmt.Printf("Unchecked item: '%s' from note with id: '%s'\n", item, id)
+				jot.DisplayNoteById(notesPath, id)
+			} else {
+				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'\n", n, id)
+			}
+		}
 
 	// No such command
 	default:
