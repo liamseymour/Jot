@@ -4,13 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"io/ioutil"
+	"jot/display"
 	"jot/jot"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 
 	dataPath := filepath.Join(notesPath, "../data/")
 	notesPath = filepath.Join(notesPath, "../data/notes.json")
-	
+
 	// Create string to run regex on, exlude first arg
 	// as it is always jot
 	commandString := strings.Join(os.Args[1:], " ")
@@ -53,14 +54,14 @@ func main() {
 		// Execute
 		switch {
 		case displayAll:
-			jot.DisplayAllNotes(notesPath)
+			display.DisplayAllNotes(notesPath)
 		case displayByTitle:
-			jot.DisplayNoteByTitle(notesPath, os.Args[len(os.Args)-1])
+			display.DisplayNoteByTitle(notesPath, os.Args[len(os.Args)-1])
 		case hasArgument:
-			jot.DisplayNoteById(notesPath, os.Args[len(os.Args)-1])
+			display.DisplayNoteById(notesPath, os.Args[len(os.Args)-1])
 		default:
 			// Todo What should default ls do?
-			jot.DisplayLastNote(notesPath)
+			display.DisplayLastNote(notesPath)
 		}
 	// Search keywords
 	case MatchStringAndCheck("^search( |$)", commandString):
@@ -68,7 +69,7 @@ func main() {
 			fmt.Println("Insufficient arguments. Use \"jot help search\" for usage.")
 			break
 		}
-		jot.DisplayNotesBySearch(notesPath, strings.Join(os.Args[2:], " "))
+		display.DisplayNotesBySearch(notesPath, strings.Join(os.Args[2:], " "))
 
 	// New Note
 	case MatchStringAndCheck("^new( |$)", commandString):
@@ -100,7 +101,7 @@ func main() {
 		fmt.Println()
 		// Here we could get away with "DisplayLastNote" but its probably more
 		// reliable to display by ID.
-		jot.DisplayNoteById(notesPath, newNoteId)
+		display.DisplayNoteById(notesPath, newNoteId)
 
 	// Delete a note
 	case MatchStringAndCheck("^(del|delete|rm|remove)( |$)", commandString):
@@ -150,31 +151,30 @@ func main() {
 			return
 		}
 		useTitle := false
-		
+
 		// Reference note by title
 		if MatchStringAndCheck("^(check)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
 			useTitle = true
 		}
 
-
-		nString := os.Args[len(os.Args) - 1] 
+		nString := os.Args[len(os.Args)-1]
 		n, err := strconv.Atoi(nString)
-		
+
 		if err != nil || n < 0 {
 			fmt.Printf("'%v' is not an non-negative integer.", nString)
 			return
 		}
-		
+
 		switch {
 		// Reference note by title
 		case useTitle:
-			title := os.Args[len(os.Args) - 2]
+			title := os.Args[len(os.Args)-2]
 			item, success := jot.CheckItemByNoteTitle(notesPath, title, n)
 
 			if success {
 				fmt.Printf("Checked item: '%s' from note with title: '%s'", item, title)
 				fmt.Println()
-				jot.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(notesPath, title)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
 				fmt.Println()
@@ -182,13 +182,13 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args) - 2]
+			id := os.Args[len(os.Args)-2]
 			item, success := jot.CheckItem(notesPath, id, n)
 
 			if success {
 				fmt.Printf("Checked item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				jot.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(notesPath, id)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
 				fmt.Println()
@@ -204,31 +204,30 @@ func main() {
 			return
 		}
 		useTitle := false
-		
+
 		// Reference note by title
 		if MatchStringAndCheck("^(uncheck)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
 			useTitle = true
 		}
 
-
-		nString := os.Args[len(os.Args) - 1] 
+		nString := os.Args[len(os.Args)-1]
 		n, err := strconv.Atoi(nString)
-		
+
 		if err != nil || n < 0 {
 			fmt.Printf("'%v' is not an non-negative integer.", nString)
 			return
 		}
-		
+
 		switch {
 		// Reference note by title
 		case useTitle:
-			title := os.Args[len(os.Args) - 2]
+			title := os.Args[len(os.Args)-2]
 			item, success := jot.UnCheckItemByNoteTitle(notesPath, title, n)
 
 			if success {
 				fmt.Printf("Unchecked item: '%s' from note with title: '%s'", item, title)
 				fmt.Println()
-				jot.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(notesPath, title)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
 				fmt.Println()
@@ -236,13 +235,13 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args) - 2]
+			id := os.Args[len(os.Args)-2]
 			item, success := jot.UnCheckItem(notesPath, id, n)
 
 			if success {
 				fmt.Printf("Unchecked item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				jot.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(notesPath, id)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
 				fmt.Println()
@@ -264,18 +263,18 @@ func main() {
 			useTitle = true
 		}
 
-		item := os.Args[len(os.Args) - 1]
-		
+		item := os.Args[len(os.Args)-1]
+
 		switch {
 		// Reference note by title
 		case useTitle:
-			title := os.Args[len(os.Args) - 2]
+			title := os.Args[len(os.Args)-2]
 			success := jot.AddItemByNoteTitle(notesPath, title, item)
 
 			if success {
 				fmt.Printf("Added item: '%s' to note with title: '%s'", item, title)
 				fmt.Println()
-				jot.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(notesPath, title)
 			} else {
 				fmt.Printf("Cannot find note with title: '%s'", title)
 				fmt.Println()
@@ -283,13 +282,13 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args) - 2]
+			id := os.Args[len(os.Args)-2]
 			success := jot.AddItem(notesPath, id, item)
 
 			if success {
 				fmt.Printf("Checked item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				jot.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(notesPath, id)
 			} else {
 				fmt.Printf("Cannot find note with id: '%s'", id)
 				fmt.Println()
@@ -305,31 +304,30 @@ func main() {
 			return
 		}
 		useTitle := false
-		
+
 		// Reference note by title
 		if MatchStringAndCheck("^(scratch)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
 			useTitle = true
 		}
 
-
-		nString := os.Args[len(os.Args) - 1] 
+		nString := os.Args[len(os.Args)-1]
 		n, err := strconv.Atoi(nString)
-		
+
 		if err != nil || n < 0 {
 			fmt.Printf("'%v' is not an non-negative integer.", nString)
 			return
 		}
-		
+
 		switch {
 		// Reference note by title
 		case useTitle:
-			title := os.Args[len(os.Args) - 2]
+			title := os.Args[len(os.Args)-2]
 			item, success := jot.RemoveItemByNoteTitle(notesPath, title, n)
 
 			if success {
 				fmt.Printf("Removed item: '%s' from note with title: '%s'", item, title)
 				fmt.Println()
-				jot.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(notesPath, title)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
 				fmt.Println()
@@ -337,13 +335,13 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args) - 2]
+			id := os.Args[len(os.Args)-2]
 			item, success := jot.RemoveItem(notesPath, id, n)
 
 			if success {
 				fmt.Printf("Removed item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				jot.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(notesPath, id)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
 				fmt.Println()
