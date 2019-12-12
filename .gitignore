@@ -19,4 +19,5 @@
 *.sublime-workspace
 
 # Personal notes
-/data/*
+/data/settings.json
+/data/notes.json
