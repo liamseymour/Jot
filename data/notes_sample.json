@@ -5,7 +5,7 @@
             "id": "bngre9ku76li6v1ts97g",
             "title": "jot",
             "time": 1575073574,
-            "lines": [],
+            "lines": ["Things that need implemented in jot:"],
             "to-do": [
                 "Alias capability",
                 "Edit note (in sublime)",
