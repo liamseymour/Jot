@@ -20,9 +20,11 @@
                 "Improve search algorithm",
                 "Develop design principles",
                 "Generalize popout option to popout to the user's prefered text editor",
+                "filepath problems",
+                "install script / include executables",
                 "(?) Ammend todo item",
                 "(?) Undo",
-                "filepath problems"
+                "(?) Option to sync with a server (google keep?)"
             ],
             "done": [
                 "CheckItem function",
