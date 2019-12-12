@@ -17,3 +17,6 @@
 # Editor files
 *.sublime-project
 *.sublime-workspace
+
+# Personal notes
+*/data/notes.json
