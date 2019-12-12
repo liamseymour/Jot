@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -27,9 +28,9 @@ type Notes struct {
 	Notes []Note `json:"notes"`
 }
 
-/* Reads Json data from path and returns the Notes object. */
+/* Reads Json data from path/notes.json and returns the Notes object. */
 func FetchNotes(path string) Notes {
-	file, err := os.Open(path)
+	file, err := os.Open(filepath.Join(path, "/notes.json"))
 	if err != nil {
 		panic(err.Error())
 	}
@@ -45,13 +46,13 @@ func FetchNotes(path string) Notes {
 	return notes
 }
 
-/* Writes the given notes object to the given json file. */
+/* Writes the given notes object to the given path/notes.json. */
 func writeNotes(notes Notes, path string) {
 	bytes, err := json.MarshalIndent(notes, "", "    ")
 	if err != nil {
 		panic(err.Error())
 	}
-	err = ioutil.WriteFile(path, bytes, 0644)
+	err = ioutil.WriteFile(filepath.Join(path, "/notes.json"), bytes, 0644)
 	if err != nil {
 		panic(err.Error())
 	}

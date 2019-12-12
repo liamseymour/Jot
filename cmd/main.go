@@ -15,11 +15,10 @@ import (
 )
 
 func main() {
-	notesPath, err := os.Executable()
+	path, err := os.Executable()
 	check(err)
 
-	dataPath := filepath.Join(notesPath, "../data/")
-	notesPath = filepath.Join(notesPath, "../data/notes.json")
+	dataPath := filepath.Join(path, "../data/")
 
 	// Create string to run regex on, exlude first arg
 	// as it is always jot
@@ -54,14 +53,14 @@ func main() {
 		// Execute
 		switch {
 		case displayAll:
-			display.DisplayAllNotes(notesPath)
+			display.DisplayAllNotes(dataPath)
 		case displayByTitle:
-			display.DisplayNoteByTitle(notesPath, os.Args[len(os.Args)-1])
+			display.DisplayNoteByTitle(dataPath, os.Args[len(os.Args)-1])
 		case hasArgument:
-			display.DisplayNoteById(notesPath, os.Args[len(os.Args)-1])
+			display.DisplayNoteById(dataPath, os.Args[len(os.Args)-1])
 		default:
 			// Todo What should default ls do?
-			display.DisplayLastNote(notesPath)
+			display.DisplayLastNote(dataPath)
 		}
 	// Search keywords
 	case MatchStringAndCheck("^search( |$)", commandString):
@@ -69,7 +68,7 @@ func main() {
 			fmt.Println("Insufficient arguments. Use \"jot help search\" for usage.")
 			break
 		}
-		display.DisplayNotesBySearch(notesPath, strings.Join(os.Args[2:], " "))
+		display.DisplayNotesBySearch(dataPath, strings.Join(os.Args[2:], " "))
 
 	// New Note
 	case MatchStringAndCheck("^new( |$)", commandString):
@@ -96,12 +95,12 @@ func main() {
 		}
 
 		// Always run
-		newNoteId := jot.NewNote(notesPath, note)
+		newNoteId := jot.NewNote(dataPath, note)
 		fmt.Printf("New note created with id: %s", newNoteId)
 		fmt.Println()
 		// Here we could get away with "DisplayLastNote" but its probably more
 		// reliable to display by ID.
-		display.DisplayNoteById(notesPath, newNoteId)
+		display.DisplayNoteById(dataPath, newNoteId)
 
 	// Delete a note
 	case MatchStringAndCheck("^(del|delete|rm|remove)( |$)", commandString):
@@ -121,7 +120,7 @@ func main() {
 		switch {
 		case useTitle:
 			title := os.Args[len(os.Args)-1]
-			id, found := jot.DeleteNoteByTitle(notesPath, title)
+			id, found := jot.DeleteNoteByTitle(dataPath, title)
 			if found {
 				fmt.Printf("Note deleted with id: %s", id)
 				fmt.Println()
@@ -132,7 +131,7 @@ func main() {
 
 		default:
 			id := os.Args[len(os.Args)-1]
-			title, found := jot.DeleteNote(notesPath, id)
+			title, found := jot.DeleteNote(dataPath, id)
 			if found {
 				fmt.Printf("Note deleted with title: %s", title)
 				fmt.Println()
@@ -169,12 +168,12 @@ func main() {
 		// Reference note by title
 		case useTitle:
 			title := os.Args[len(os.Args)-2]
-			item, success := jot.CheckItemByNoteTitle(notesPath, title, n)
+			item, success := jot.CheckItemByNoteTitle(dataPath, title, n)
 
 			if success {
 				fmt.Printf("Checked item: '%s' from note with title: '%s'", item, title)
 				fmt.Println()
-				display.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(dataPath, title)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
 				fmt.Println()
@@ -183,12 +182,12 @@ func main() {
 		// No options
 		default:
 			id := os.Args[len(os.Args)-2]
-			item, success := jot.CheckItem(notesPath, id, n)
+			item, success := jot.CheckItem(dataPath, id, n)
 
 			if success {
 				fmt.Printf("Checked item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				display.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(dataPath, id)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
 				fmt.Println()
@@ -222,12 +221,12 @@ func main() {
 		// Reference note by title
 		case useTitle:
 			title := os.Args[len(os.Args)-2]
-			item, success := jot.UnCheckItemByNoteTitle(notesPath, title, n)
+			item, success := jot.UnCheckItemByNoteTitle(dataPath, title, n)
 
 			if success {
 				fmt.Printf("Unchecked item: '%s' from note with title: '%s'", item, title)
 				fmt.Println()
-				display.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(dataPath, title)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
 				fmt.Println()
@@ -236,12 +235,12 @@ func main() {
 		// No options
 		default:
 			id := os.Args[len(os.Args)-2]
-			item, success := jot.UnCheckItem(notesPath, id, n)
+			item, success := jot.UnCheckItem(dataPath, id, n)
 
 			if success {
 				fmt.Printf("Unchecked item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				display.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(dataPath, id)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
 				fmt.Println()
@@ -269,12 +268,12 @@ func main() {
 		// Reference note by title
 		case useTitle:
 			title := os.Args[len(os.Args)-2]
-			success := jot.AddItemByNoteTitle(notesPath, title, item)
+			success := jot.AddItemByNoteTitle(dataPath, title, item)
 
 			if success {
 				fmt.Printf("Added item: '%s' to note with title: '%s'", item, title)
 				fmt.Println()
-				display.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(dataPath, title)
 			} else {
 				fmt.Printf("Cannot find note with title: '%s'", title)
 				fmt.Println()
@@ -283,12 +282,12 @@ func main() {
 		// No options
 		default:
 			id := os.Args[len(os.Args)-2]
-			success := jot.AddItem(notesPath, id, item)
+			success := jot.AddItem(dataPath, id, item)
 
 			if success {
 				fmt.Printf("Checked item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				display.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(dataPath, id)
 			} else {
 				fmt.Printf("Cannot find note with id: '%s'", id)
 				fmt.Println()
@@ -322,12 +321,12 @@ func main() {
 		// Reference note by title
 		case useTitle:
 			title := os.Args[len(os.Args)-2]
-			item, success := jot.RemoveItemByNoteTitle(notesPath, title, n)
+			item, success := jot.RemoveItemByNoteTitle(dataPath, title, n)
 
 			if success {
 				fmt.Printf("Removed item: '%s' from note with title: '%s'", item, title)
 				fmt.Println()
-				display.DisplayNoteByTitle(notesPath, title)
+				display.DisplayNoteByTitle(dataPath, title)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with title: '%s'", n, title)
 				fmt.Println()
@@ -336,12 +335,12 @@ func main() {
 		// No options
 		default:
 			id := os.Args[len(os.Args)-2]
-			item, success := jot.RemoveItem(notesPath, id, n)
+			item, success := jot.RemoveItem(dataPath, id, n)
 
 			if success {
 				fmt.Printf("Removed item: '%s' from note with id: '%s'", item, id)
 				fmt.Println()
-				display.DisplayNoteById(notesPath, id)
+				display.DisplayNoteById(dataPath, id)
 			} else {
 				fmt.Printf("Cannot find item number: '%d' from note with id: '%s'", n, id)
 				fmt.Println()

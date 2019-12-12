@@ -1,25 +1,87 @@
 package display
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"jot/jot"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/gookit/color"
 )
 
+// Whole settings file
+type Settings struct {
+	Style Style `json:"style"`
+}
+
+// Style section of settings file
+type Style struct {
+	TitleColor string `json:"title-color"`
+	DateColor  string `json:"date-color"`
+	IdColor    string `json:"id-color"`
+}
+
+/* Get the color from string representation */
+func color_of_string(colorString string) color.Color {
+	switch colorString {
+	case "Black":
+		return color.Black
+	case "White":
+		return color.White
+	case "Gray":
+		return color.Gray
+	case "Red":
+		return color.Red
+	case "Green":
+		return color.Green
+	case "Yellow":
+		return color.Yellow
+	case "Blue":
+		return color.Blue
+	case "Magenta":
+		return color.Magenta
+	case "Cyan":
+		return color.Cyan
+	default:
+		return color.Black
+	}
+}
+
 /* 			   	 Display 			   */
-/* Displays the given note to std out. */
-func displayNote(note jot.Note) {
+/* Displays the given note to std out using style settings from path/settings.json. */
+func displayNote(dataPath string, note jot.Note) {
+	// Load style settings
+	file, err := os.Open(filepath.Join(dataPath, "/settings.json"))
+	if err != nil {
+		panic(err.Error())
+	}
+	defer file.Close()
+
+	var settings Settings
+	bytes, _ := ioutil.ReadAll(file)
+	err = json.Unmarshal(bytes, &settings)
+	if err != nil {
+		panic(err.Error())
+	}
+	style := settings.Style
+
+	// Setup styles
+	titleStyle := color_of_string(style.TitleColor)
+	dateStyle := color_of_string(style.DateColor)
+	idStyle := color_of_string(style.IdColor)
+
 	// Header
 	fmt.Println()
 	time := time.Unix(int64(note.Time), 0).Format("Jan 2 3:04 2006")
-	color.Yellow.Printf("%s\n", note.Title)
+	titleStyle.Printf("%s\n", note.Title)
 	fmt.Print("Taken: ")
-	color.Blue.Printf("%v\n", time)
+	dateStyle.Printf("%v\n", time)
 	fmt.Print("ID: ")
-	color.Blue.Printf("%s", note.Id)
+	idStyle.Printf("%s", note.Id)
 
 	// Lines
 	if len(note.Lines) != 0 {
@@ -54,7 +116,7 @@ func displayNote(note jot.Note) {
 
 func DisplayNoteById(path string, id string) {
 	note, _ := jot.GetNoteById(path, id)
-	displayNote(note)
+	displayNote(path, note)
 }
 
 func DisplayNoteByTitle(path string, title string) {
@@ -65,21 +127,21 @@ func DisplayNoteByTitle(path string, title string) {
 }
 
 /* Displays the given notes to std out. */
-func displayNotes(notes jot.Notes) {
+func displayNotes(path string, notes jot.Notes) {
 	for i := 0; i < len(notes.Notes); i++ {
-		displayNote(notes.Notes[i])
+		displayNote(path, notes.Notes[i])
 	}
 }
 
 /* Displays the stored notes to std out. */
 func DisplayAllNotes(path string) {
-	displayNotes(jot.FetchNotes(path))
+	displayNotes(path, jot.FetchNotes(path))
 }
 
 /* Displays the last note taken to std out. */
 func DisplayLastNote(path string) {
 	notes := jot.FetchNotes(path)
-	displayNote(notes.Notes[len(notes.Notes)-1])
+	displayNote(path, notes.Notes[len(notes.Notes)-1])
 }
 
 /* Displays notes with any of the keywords in the title to std out. */
@@ -97,5 +159,5 @@ func DisplayNotesBySearch(path string, search string) {
 			}
 		}
 	}
-	displayNotes(filtered)
+	displayNotes(path, filtered)
 }
