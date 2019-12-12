@@ -1,0 +1,10 @@
+{
+    "style": {
+        "title-color":"yellow",
+        "title-background":"black",
+        "date-color":"cyan",
+        "date-background":"black",
+        "id-color":"cyan",
+        "id-background":"black"
+    }
+}
