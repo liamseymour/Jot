@@ -397,7 +397,9 @@ func readNoteFromTextEditor(path, title string) string {
 	file.Close()
 
 	// open in sublime
-	cmd := exec.Command("subl", "-n", fp)
+	sublPath, err := exec.LookPath("subl")
+	check(err)
+	cmd := exec.Command(sublPath, "-n", fp)
 	err = cmd.Run()
 	check(err)
 
