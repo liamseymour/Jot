@@ -19,4 +19,4 @@
 *.sublime-workspace
 
 # Personal notes
-*/data/notes.json
+/data/*
