@@ -1,7 +1,10 @@
 {
     "style": {
-        "title-color":"Yellow",
-        "date-color":"Blue",
-        "id-color":"Blue"
+        "title-color":"yellow",
+        "title-background":"black",
+        "date-color":"cyan",
+        "date-background":"black",
+        "id-color":"cyan",
+        "id-background":"black"
     }
 }

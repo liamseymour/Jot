@@ -20,35 +20,12 @@ type Settings struct {
 
 // Style section of settings file
 type Style struct {
-	TitleColor string `json:"title-color"`
-	DateColor  string `json:"date-color"`
-	IdColor    string `json:"id-color"`
-}
-
-/* Get the color from string representation */
-func color_of_string(colorString string) color.Color {
-	switch colorString {
-	case "Black":
-		return color.Black
-	case "White":
-		return color.White
-	case "Gray":
-		return color.Gray
-	case "Red":
-		return color.Red
-	case "Green":
-		return color.Green
-	case "Yellow":
-		return color.Yellow
-	case "Blue":
-		return color.Blue
-	case "Magenta":
-		return color.Magenta
-	case "Cyan":
-		return color.Cyan
-	default:
-		return color.Black
-	}
+	TitleColor      string `json:"title-color"`
+	TitleBackground string `json:"title-background"`
+	DateColor       string `json:"date-color"`
+	DateBackground  string `json:"date-background"`
+	IdColor         string `json:"id-color"`
+	IdBackground    string `json:"id-background"`
 }
 
 /* 			   	 Display 			   */
@@ -70,18 +47,20 @@ func displayNote(dataPath string, note jot.Note) {
 	style := settings.Style
 
 	// Setup styles
-	titleStyle := color_of_string(style.TitleColor)
-	dateStyle := color_of_string(style.DateColor)
-	idStyle := color_of_string(style.IdColor)
+	titleStyle := color.New(color.FgColors[style.TitleColor], color.BgColors[style.TitleBackground])
+	dateStyle := color.New(color.FgColors[style.DateColor], color.BgColors[style.DateBackground])
+	idStyle := color.New(color.FgColors[style.IdColor], color.BgColors[style.IdBackground])
 
 	// Header
 	fmt.Println()
 	time := time.Unix(int64(note.Time), 0).Format("Jan 2 3:04 2006")
-	titleStyle.Printf("%s\n", note.Title)
+	titleStyle.Printf(note.Title)
+	fmt.Println()
 	fmt.Print("Taken: ")
-	dateStyle.Printf("%v\n", time)
+	dateStyle.Printf("%v", time)
+	fmt.Println()
 	fmt.Print("ID: ")
-	idStyle.Printf("%s", note.Id)
+	idStyle.Printf(note.Id)
 
 	// Lines
 	if len(note.Lines) != 0 {
