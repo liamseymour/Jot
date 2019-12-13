@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"jot/jot"
+	jot "jot/model"
 	"os"
 	"path/filepath"
 	"strings"

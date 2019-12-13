@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"jot/display"
-	"jot/jot"
+	jot "jot/model"
 	"os"
 	"os/exec"
 	"path/filepath"
