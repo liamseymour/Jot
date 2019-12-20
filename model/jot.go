@@ -217,6 +217,46 @@ func AddItemByNoteTitle(path string, title string, item string) (success bool) {
 	return found
 }
 
+/* Return the string representation of a Note */
+func GetNoteString(path string, id string) (noteString string, success bool) {
+	var note Note
+	note, success = GetNoteById(path, id)
+	if success {
+		noteString = noteToString(note)
+	} else {
+		noteString = ""
+	}
+	return
+}
+
+/* Return the string representation of a Note with specified title */
+func GetNoteStringByTitle(path string, title string) (noteString string, success bool) {
+	id, found := GetIdFromTitle(path, title)
+	if found {
+		return GetNoteString(path, id)
+	}
+	return "", found
+}
+
+/* Given an id and a string representation of a note, overwrite the note with id with the newNoteString */
+func EditNote(path, id, newNoteString string) bool {
+	// Create edited version of note
+	newNote := parseNote(newNoteString)
+	oldNote, found := GetNoteById(path, id)
+	if found {
+		newNote.Id = oldNote.Id
+		newNote.Time = oldNote.Time
+
+		// write it
+		notes, success := replaceNote(path, id, newNote)
+		writeNotes(notes, path)
+		return success
+	} else {
+		return found
+	}
+
+}
+
 // Helper
 /* Parses a string into a note, assuming the first line is a title and lines
  * that begin with " - " are checklist items. */
@@ -261,7 +301,7 @@ func noteToString(note Note) string {
 	return s
 }
 
-func GetNoteById(path string, id string) (note Note, found bool) {
+func GetNoteById(path, id string) (note Note, found bool) {
 	notes := FetchNotes(path)
 	found = false
 	for i := 0; i < len(notes.Notes); i++ {
@@ -274,7 +314,7 @@ func GetNoteById(path string, id string) (note Note, found bool) {
 	return
 }
 
-func GetIdFromTitle(path string, title string) (id string, found bool) {
+func GetIdFromTitle(path, title string) (id string, found bool) {
 	notes := FetchNotes(path)
 	found = false
 	id = ""
@@ -287,7 +327,7 @@ func GetIdFromTitle(path string, title string) (id string, found bool) {
 	return
 }
 
-func replaceNote(path string, id string, newNote Note) (notes Notes, success bool) {
+func replaceNote(path, id string, newNote Note) (notes Notes, success bool) {
 	success = false
 	notes = FetchNotes(path)
 

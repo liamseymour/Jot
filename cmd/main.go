@@ -87,20 +87,25 @@ func main() {
 
 		// Execute
 		var note string
+		success := true
 		switch {
 		case !popOut:
 			note = readNoteFromConsole(title)
 		case popOut:
-			note = readNoteFromTextEditor(dataPath, title)
+			note, success = readNoteFromTextEditor(dataPath, title)
 		}
 
-		// Always run
-		newNoteId := jot.NewNote(dataPath, note)
-		fmt.Printf("New note created with id: %s", newNoteId)
-		fmt.Println()
-		// Here we could get away with "DisplayLastNote" but its probably more
-		// reliable to display by ID.
-		display.DisplayNoteById(dataPath, newNoteId)
+		if success {
+			newNoteId := jot.NewNote(dataPath, note)
+			fmt.Printf("New note created with id: %s", newNoteId)
+			fmt.Println()
+			// Here we could get away with "DisplayLastNote" but its probably more
+			// reliable to display by ID.
+			display.DisplayNoteById(dataPath, newNoteId)
+		} else {
+			fmt.Printf("Cannot locate text editor. Check your settings.")
+			fmt.Println()
+		}
 
 	// Delete a note
 	case MatchStringAndCheck("^(del|delete|rm|remove)( |$)", commandString):
@@ -346,13 +351,81 @@ func main() {
 				fmt.Println()
 			}
 		}
+
+	// edit note
+	case MatchStringAndCheck("^(edit)( |$)", commandString):
+		useTitle := false
+		// Parse command
+		// Bad call
+		if !MatchStringAndCheck("^(edit)( -.+)* [[:word:]]*", commandString) {
+			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
+			fmt.Println()
+			return
+		}
+		// Delete by title
+		if MatchStringAndCheck("^(edit)( -.+)* -t [[:word:]]*", commandString) {
+			useTitle = true
+		}
+
+		switch {
+		case useTitle:
+			title := os.Args[len(os.Args)-1]
+			id, found := jot.GetIdFromTitle(dataPath, title)
+			oldText, found := jot.GetNoteString(dataPath, id)
+
+			// After getting user input, edit the note
+			if found {
+				written, success := readNoteFromTextEditor(dataPath, oldText)
+				if success {
+					if jot.EditNote(dataPath, id, written) {
+						fmt.Println("Success, note changed:")
+						display.DisplayNoteById(dataPath, id)
+					} else {
+						fmt.Println("Failure, note not changed.")
+					}
+				} else {
+					fmt.Printf("Cannot locate text editor. Check your settings.")
+					fmt.Println()
+				}
+			} else {
+				fmt.Printf("No note found with title: %s", title)
+				fmt.Println()
+			}
+
+		default:
+			id := os.Args[len(os.Args)-1]
+			oldText, found := jot.GetNoteString(dataPath, id)
+
+			// After getting user input, edit the note
+			if found {
+				written, success := readNoteFromTextEditor(dataPath, oldText)
+				if success {
+					if jot.EditNote(dataPath, id, written) {
+						fmt.Println("Success, note changed:")
+						display.DisplayNoteById(dataPath, id)
+					} else {
+						fmt.Println("Failure, note not changed.")
+					}
+				} else {
+					fmt.Printf("Cannot locate text editor. Check your settings.")
+					fmt.Println()
+				}
+			} else {
+				fmt.Printf("No note found with id: %s", id)
+				fmt.Println()
+			}
+		}
+
+	default:
+		fmt.Printf("Unrecognized command: '%s'. use 'jot help' to see a list of available commands.", commandString)
+		fmt.Println()
 	}
 }
 
 /*************Helper Functions*************/
 
-func MatchStringAndCheck(pattern string, string string) bool {
-	match, err := regexp.MatchString(pattern, string)
+func MatchStringAndCheck(pattern string, s string) bool {
+	match, err := regexp.MatchString(pattern, s)
 	if err != nil {
 		fmt.Println("Command parsing error.")
 		panic(err.Error())
@@ -383,7 +456,7 @@ func readNoteFromConsole(title string) string {
 	return s
 }
 
-func readNoteFromTextEditor(path, title string) string {
+func readNoteFromTextEditor(path, seedText string) (written string, success bool) {
 	// To-do generalize text editor, pull path from a settings file
 	// find the available programs etc...
 
@@ -391,29 +464,41 @@ func readNoteFromTextEditor(path, title string) string {
 	fp := filepath.Join(path, "input.txt")
 	file, err := os.Create(fp)
 	check(err)
-	titleBytes := []byte(title)
-	_, err = file.Write(titleBytes)
+	seedTextBytes := []byte(seedText)
+	_, err = file.Write(seedTextBytes)
 	check(err)
 	file.Close()
 
 	// open in sublime
+	success = true
 	sublPath, err := exec.LookPath("subl")
-	check(err)
-	cmd := exec.Command(sublPath, "-n", fp)
+	if err != nil {
+		success = false
+	}
+	cmd := exec.Command(sublPath, fp)
 	err = cmd.Run()
-	check(err)
+	if err != nil {
+		success = false
+	}
 
-	// when the user says so, read it
-	fmt.Println("Press enter to continue.")
-	reader := bufio.NewReader(os.Stdin)
-	_, _, _ = reader.ReadRune()
+	// If a text editor is located
+	if success {
+		// when the user says so, read it
+		fmt.Println("Press enter to continue.")
+		reader := bufio.NewReader(os.Stdin)
+		_, _, _ = reader.ReadRune()
 
-	bytes, err := ioutil.ReadFile(fp)
-	check(err)
+		bytes, err := ioutil.ReadFile(fp)
+		check(err)
 
-	// delete text file
-	err = os.Remove(fp)
-	check(err)
+		// delete text file
+		err = os.Remove(fp)
+		check(err)
 
-	return string(bytes)
+		written = string(bytes)
+	} else {
+		written = ""
+	}
+
+	return
 }
