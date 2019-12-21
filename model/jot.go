@@ -290,6 +290,10 @@ func parseNote(text string) Note {
 	for i := 0; i < len(lines); i++ {
 		lines[i] = strings.Trim(lines[i], "\r")
 	}
+	// delete any trailing empty string from splitting on newlines
+	if len(lines) > 0 && lines[len(lines)-1] == "" {
+		lines = lines[:len(lines)-1]
+	}
 
 	var note Note
 	note.Id = xid.New().String()

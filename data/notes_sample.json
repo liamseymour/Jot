@@ -17,8 +17,7 @@
                 "Backup notes file",
                 "Improve search algorithm",
                 "Generalize popout option to popout to the user's prefered text editor",
-                "(?) Undo",
-                "BUG: Edit adds an extra newline"
+                "(?) Undo"
             ],
             "done": [
                 "CheckItem function",
@@ -29,7 +28,8 @@
                 "Refactor command parser",
                 "Ammend todo item",
                 "Edit note (in text editor)",
-                "Refactor display out of jot.go"
+                "Refactor display out of jot.go",
+                "BUG: Edit adds an extra newline"
             ]
         }
     ] 
