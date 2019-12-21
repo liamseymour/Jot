@@ -257,6 +257,30 @@ func EditNote(path, id, newNoteString string) bool {
 
 }
 
+/* Given a path to the folder containing notes.json, an id to a note,
+and a item number to change, replace that list item with newItem. Return if
+the operation was succesful or not. */
+func EditListItem(path, id string, listItem int, newItem string) bool {
+	// find note
+	notes := FetchNotes(path)
+	var noteToEdit Note
+	for _, note := range notes.Notes {
+		if note.Id == id {
+			noteToEdit = note
+			break
+		}
+	}
+
+	// replace list item
+	success := false
+	if listItem < len(noteToEdit.Todo) {
+		noteToEdit.Todo[listItem] = newItem
+		success = true
+		writeNotes(notes, path)
+	}
+	return success
+}
+
 // Helper
 /* Parses a string into a note, assuming the first line is a title and lines
  * that begin with " - " are checklist items. */

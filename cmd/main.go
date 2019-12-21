@@ -15,10 +15,10 @@ import (
 )
 
 func main() {
-	path, err := os.Executable()
+	exePath, err := os.Executable()
 	check(err)
 
-	dataPath := filepath.Join(path, "../data/")
+	dataPath := filepath.Join(exePath, "../data/")
 
 	// Create string to run regex on, exlude first arg
 	// as it is always jot
@@ -413,6 +413,48 @@ func main() {
 			} else {
 				fmt.Printf("No note found with id: %s", id)
 				fmt.Println()
+			}
+		}
+
+	// ammend, edit a list item
+	case MatchStringAndCheck("^(ammend)( |$)", commandString):
+		useTitle := false
+		// Parse command
+		// Bad call
+		if !MatchStringAndCheck("^(ammend)( -.+)* [[:word:]]* [[:digit:]]* [[:word:]]*", commandString) {
+			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
+			fmt.Println()
+			return
+		}
+		// Delete by title
+		if MatchStringAndCheck("^(ammend)( -.+)* -t [[:word:]]* [[:digit:]]* [[:word:]]*", commandString) {
+			useTitle = true
+		}
+
+		n, err := strconv.Atoi(os.Args[len(os.Args)-2])
+		check(err)
+		var id string
+		newItem := os.Args[len(os.Args)-1]
+
+		switch {
+		case useTitle:
+			title := os.Args[len(os.Args)-3]
+			var success bool
+			id, success = jot.GetIdFromTitle(dataPath, title)
+			if success && jot.EditListItem(dataPath, id, n, newItem) {
+				fmt.Println("Success: ")
+				display.DisplayNoteById(dataPath, id)
+			} else {
+				fmt.Println("Failure: Cannot ammend item.")
+			}
+
+		default:
+			id = os.Args[len(os.Args)-3]
+			if jot.EditListItem(dataPath, id, n, newItem) {
+				fmt.Println("Success: ")
+				display.DisplayNoteById(dataPath, id)
+			} else {
+				fmt.Println("Failure: Cannot ammend item.")
 			}
 		}
 
