@@ -1,10 +1,12 @@
 {
     "style": {
         "title-color":"yellow",
-        "title-background":"black",
+        "title-background":"default",
         "date-color":"cyan",
-        "date-background":"black",
+        "date-background":"default",
         "id-color":"cyan",
-        "id-background":"black"
-    }
+        "id-background":"default"
+    },
+
+    "prefered-text-editor-path":"C:\\Program Files\\Sublime Text 3"
 }

@@ -1,49 +1,20 @@
 package display
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	jot "jot/model"
-	"os"
-	"path/filepath"
+	settings "jot/settings"
 	"strings"
 	"time"
 
 	"github.com/gookit/color"
 )
 
-// Whole settings file
-type Settings struct {
-	Style Style `json:"style"`
-}
-
-// Style section of settings file
-type Style struct {
-	TitleColor      string `json:"title-color"`
-	TitleBackground string `json:"title-background"`
-	DateColor       string `json:"date-color"`
-	DateBackground  string `json:"date-background"`
-	IdColor         string `json:"id-color"`
-	IdBackground    string `json:"id-background"`
-}
-
 /* 			   	 Display 			   */
 /* Displays the given note to std out using style settings from path/settings.json. */
 func displayNote(dataPath string, note jot.Note) {
 	// Load style settings
-	file, err := os.Open(filepath.Join(dataPath, "/settings.json"))
-	if err != nil {
-		panic(err.Error())
-	}
-	defer file.Close()
-
-	var settings Settings
-	bytes, _ := ioutil.ReadAll(file)
-	err = json.Unmarshal(bytes, &settings)
-	if err != nil {
-		panic(err.Error())
-	}
+	settings := settings.LoadSettings(dataPath)
 	style := settings.Style
 
 	// Setup styles

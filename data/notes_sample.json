@@ -5,10 +5,9 @@
             "id": "bngre9ku76li6v1ts97g",
             "title": "jot",
             "time": 1575073574,
-            "lines": ["Things that need implemented in jot:"],
+            "lines": [],
             "to-do": [
                 "Alias capability",
-                "Edit note (in sublime)",
                 "Sub items",
                 "Multiple item addition",
                 "Default ls behavior",
@@ -16,15 +15,10 @@
                 "Cycle through search results",
                 "Settings",
                 "Backup notes file",
-                "Refactor display out of jot.go",
                 "Improve search algorithm",
-                "Develop design principles",
                 "Generalize popout option to popout to the user's prefered text editor",
-                "filepath problems",
-                "install script / include executables",
-                "(?) Ammend todo item",
                 "(?) Undo",
-                "(?) Option to sync with a server (google keep?)"
+                "BUG: Edit adds an extra newline"
             ],
             "done": [
                 "CheckItem function",
@@ -32,7 +26,10 @@
                 "AddItem function",
                 "RemoveItem function",
                 "Add note in sublime",
-                "Refactor command parser"
+                "Refactor command parser",
+                "Ammend todo item",
+                "Edit note (in text editor)",
+                "Refactor display out of jot.go"
             ]
         }
     ] 
