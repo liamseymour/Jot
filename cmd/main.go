@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"jot/display"
 	jot "jot/model"
+	settings "jot/settings"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -499,9 +500,6 @@ func readNoteFromConsole(title string) string {
 }
 
 func readNoteFromTextEditor(path, seedText string) (written string, success bool) {
-	// To-do generalize text editor, pull path from a settings file
-	// find the available programs etc...
-
 	// create text file
 	fp := filepath.Join(path, "input.txt")
 	file, err := os.Create(fp)
@@ -511,13 +509,15 @@ func readNoteFromTextEditor(path, seedText string) (written string, success bool
 	check(err)
 	file.Close()
 
-	// open in sublime
+	// open in text editor
 	success = true
-	sublPath, err := exec.LookPath("subl")
-	if err != nil {
-		success = false
-	}
-	cmd := exec.Command(sublPath, fp)
+	editorSettings := settings.GetTextEditor(path)
+	editorPath := editorSettings.TextEditorPath
+	editorArgs := editorSettings.TextEditorArgs
+
+	// prepend filepath into args
+	editorArgs = append([]string{fp}, editorArgs...)
+	cmd := exec.Command(editorPath, editorArgs...)
 	err = cmd.Run()
 	if err != nil {
 		success = false

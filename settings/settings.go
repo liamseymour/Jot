@@ -9,8 +9,8 @@ import (
 
 // Whole (or top level) settings file
 type Settings struct {
-	Style          Style  `json:"style"`
-	TextEditorPath string `json:"prefered-text-editor-path"`
+	Style      Style      `json:"style"`
+	TextEditor TextEditor `json:"text-editor"`
 }
 
 // Style section of settings file
@@ -21,6 +21,11 @@ type Style struct {
 	DateBackground  string `json:"date-background"`
 	IdColor         string `json:"id-color"`
 	IdBackground    string `json:"id-background"`
+}
+
+type TextEditor struct {
+	TextEditorPath string   `json:"prefered-text-editor-path"`
+	TextEditorArgs []string `json:"text-editor-args"`
 }
 
 /* Load the settings.json file in the given path into a Settings struct.*/
@@ -46,6 +51,6 @@ func GetStyle(path string) Style {
 	return LoadSettings(path).Style
 }
 
-func GetTextEditorPath(path string) string {
-	return LoadSettings(path).TextEditorPath
+func GetTextEditor(path string) TextEditor {
+	return LoadSettings(path).TextEditor
 }

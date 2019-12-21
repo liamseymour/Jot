@@ -7,6 +7,9 @@
         "id-color":"cyan",
         "id-background":"default"
     },
-
-    "prefered-text-editor-path":"C:\\Program Files\\Sublime Text 3"
+    
+    "text-editor": {
+        "prefered-text-editor-path":"C:\\Program Files\\Sublime Text 3\\subl.exe",
+        "text-editor-args":[]
+    }
 }
