@@ -3,7 +3,7 @@ package display
 import (
 	"fmt"
 	jot "jot/model"
-	settings "jot/settings"
+	"jot/settings"
 	"strings"
 	"time"
 

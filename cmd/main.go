@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"jot/display"
 	jot "jot/model"
-	settings "jot/settings"
+	"jot/settings"
 	"os"
 	"os/exec"
 	"path/filepath"
