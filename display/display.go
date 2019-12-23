@@ -138,7 +138,7 @@ func SplitPrintln(prefix, str string) {
 
 	// print with prefix
 	breakIndex := findLastBreak(str, width-len(prefix))
-	if breakIndex == 0 {
+	if breakIndex == -1 {
 		breakIndex = width - len(prefix)
 	}
 
@@ -148,7 +148,7 @@ func SplitPrintln(prefix, str string) {
 
 	for len(prefix)+len(str) > width {
 		breakIndex := findLastBreak(str, width-len(prefix))
-		if breakIndex == 0 {
+		if breakIndex == -1 {
 			breakIndex = width - len(prefix)
 		}
 		head = str[:breakIndex]
@@ -168,5 +168,5 @@ func findLastBreak(str string, pos int) int {
 			return i
 		}
 	}
-	return 0
+	return -1
 }
