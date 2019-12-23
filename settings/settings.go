@@ -15,6 +15,7 @@ type Settings struct {
 
 /* Style section of settings file */
 type Style struct {
+	IndentWidth          int    `json:"indent-width"`
 	TitleColor           string `json:"title-color"`
 	TitleBackground      string `json:"title-background"`
 	DateColor            string `json:"date-color"`

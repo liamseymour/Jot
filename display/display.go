@@ -32,6 +32,11 @@ func displayNote(note jot.Note) {
 	doneBulletStyle := color.New(color.FgColors[style.DoneBulletColor], color.BgColors[style.DoneBulletBackground])
 	doneItemStyle := color.New(color.FgColors[style.DoneItemColor], color.BgColors[style.DoneItemBackground])
 
+	indent := ""
+	for i := style.IndentWidth; i > 0; i-- {
+		indent += " "
+	}
+
 	// Header
 	fmt.Println()
 	time := time.Unix(int64(note.Time), 0).Format("Jan 2 3:04 2006")
@@ -48,30 +53,30 @@ func displayNote(note jot.Note) {
 		fmt.Println()
 	}
 	for i := 0; i < len(note.Lines); i++ {
-		SplitPrintln(" ", note.Lines[i], defaultStyle, contentStyle)
+		SplitPrintln(indent, note.Lines[i], defaultStyle, contentStyle)
 	}
 
 	// 'to-do'
 	if len(note.Todo) != 0 {
 		fmt.Println()
-		fmt.Print("  ")
+		fmt.Print(indent)
 		todoHeadStyle.Printf("To-do:")
 		fmt.Println()
 	}
 	for i := 0; i < len(note.Todo); i++ {
-		prefix := fmt.Sprintf("%5v) ", i)
+		prefix := fmt.Sprintf(indent+"%3d) ", i)
 		SplitPrintln(prefix, note.Todo[i], todoBulletStyle, todoItemStyle)
 	}
 
 	// Done
 	if len(note.Done) != 0 {
 		fmt.Println()
-		fmt.Print("  ")
+		fmt.Print(indent)
 		doneHeadStyle.Printf("Done:")
 		fmt.Println()
 	}
 	for i := 0; i < len(note.Done); i++ {
-		prefix := fmt.Sprintf("%5v) ", i)
+		prefix := fmt.Sprintf(indent+"%3d) ", i)
 		SplitPrintln(prefix, note.Done[i], doneBulletStyle, doneItemStyle)
 	}
 

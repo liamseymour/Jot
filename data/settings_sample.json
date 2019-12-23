@@ -1,5 +1,7 @@
 {
     "style": {
+        "indent-width":2,
+
         "title-color":"yellow",
         "title-background":"default",
 
