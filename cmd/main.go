@@ -511,7 +511,7 @@ func readNoteFromTextEditor(path, seedText string) (written string, success bool
 
 	// open in text editor
 	success = true
-	editorSettings := settings.GetTextEditor(path)
+	editorSettings := settings.GetTextEditor()
 	editorPath := editorSettings.TextEditorPath
 	editorArgs := editorSettings.TextEditorArgs
 

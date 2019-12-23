@@ -14,8 +14,7 @@ import (
 /* Displays the given note to std out using style settings from path/settings.json. */
 func displayNote(dataPath string, note jot.Note) {
 	// Load style settings
-	settings := settings.LoadSettings(dataPath)
-	style := settings.Style
+	style := settings.GetStyle()
 
 	// Setup styles
 	titleStyle := color.New(color.FgColors[style.TitleColor], color.BgColors[style.TitleBackground])
