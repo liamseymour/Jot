@@ -2,10 +2,30 @@
     "style": {
         "title-color":"yellow",
         "title-background":"default",
-        "date-color":"cyan",
+        
+        "date-color":"blue",
         "date-background":"default",
-        "id-color":"cyan",
-        "id-background":"default"
+
+        "id-color":"blue",
+        "id-background":"default",
+
+        "todo-head-color":"red",
+        "todo-head-background":"default",
+
+        "todo-bullet-color":"blue",
+        "todo-bullet-background":"default",
+
+        "todo-item-color":"default",
+        "todo-item-background":"default",
+
+        "done-bullet-color":"blue",
+        "done-bullet-background":"default",
+
+        "done-item-color":"default",
+        "done-item-background":"default",
+
+        "done-head-color":"green",
+        "done-head-background":"default"
     },
     
     "text-editor": {

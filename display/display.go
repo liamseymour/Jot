@@ -19,9 +19,17 @@ func displayNote(note jot.Note) {
 	style := settings.GetStyle()
 
 	// Setup styles
+	defaultStyle := color.New(color.FgColors["default"], color.BgColors["default"])
+
 	titleStyle := color.New(color.FgColors[style.TitleColor], color.BgColors[style.TitleBackground])
 	dateStyle := color.New(color.FgColors[style.DateColor], color.BgColors[style.DateBackground])
 	idStyle := color.New(color.FgColors[style.IdColor], color.BgColors[style.IdBackground])
+	todoHeadStyle := color.New(color.FgColors[style.TodoHeadColor], color.BgColors[style.TodoHeadBackground])
+	todoBulletStyle := color.New(color.FgColors[style.TodoBulletColor], color.BgColors[style.TodoBulletBackground])
+	todoItemStyle := color.New(color.FgColors[style.TodoItemColor], color.BgColors[style.TodoItemBackground])
+	doneHeadStyle := color.New(color.FgColors[style.DoneHeadColor], color.BgColors[style.DoneHeadBackground])
+	doneBulletStyle := color.New(color.FgColors[style.DoneBulletColor], color.BgColors[style.DoneBulletBackground])
+	doneItemStyle := color.New(color.FgColors[style.DoneItemColor], color.BgColors[style.DoneItemBackground])
 
 	// Header
 	fmt.Println()
@@ -39,27 +47,31 @@ func displayNote(note jot.Note) {
 		fmt.Println()
 	}
 	for i := 0; i < len(note.Lines); i++ {
-		SplitPrintln(" ", note.Lines[i])
+		SplitPrintln(" ", note.Lines[i], defaultStyle, defaultStyle)
 	}
 
-	// to-do
+	// 'to-do'
 	if len(note.Todo) != 0 {
 		fmt.Println()
-		fmt.Println("  To-do: ")
+		fmt.Print("  ")
+		todoHeadStyle.Printf("To-do:")
+		fmt.Println()
 	}
 	for i := 0; i < len(note.Todo); i++ {
 		prefix := fmt.Sprintf("%5v) ", i)
-		SplitPrintln(prefix, note.Todo[i])
+		SplitPrintln(prefix, note.Todo[i], todoBulletStyle, todoItemStyle)
 	}
 
 	// Done
 	if len(note.Done) != 0 {
 		fmt.Println()
-		fmt.Println("  Done: ")
+		fmt.Print("  ")
+		doneHeadStyle.Printf("Done:")
+		fmt.Println()
 	}
 	for i := 0; i < len(note.Done); i++ {
 		prefix := fmt.Sprintf("%5v) ", i)
-		SplitPrintln(prefix, note.Done[i])
+		SplitPrintln(prefix, note.Done[i], doneBulletStyle, doneItemStyle)
 	}
 
 	fmt.Println()
@@ -117,7 +129,7 @@ func DisplayNotesBySearch(search string) {
 
 /* Splits the string with respect to terminal width and indents based on the prefix width.
 Prints all out to console. Will try to split on word breaks.*/
-func SplitPrintln(prefix, str string) {
+func SplitPrintln(prefix, str string, prefixStyle, strStyle color.Style) {
 	// Terminal dimentions
 	width, _, err := terminal.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
@@ -126,7 +138,9 @@ func SplitPrintln(prefix, str string) {
 
 	// no formating needed
 	if len(prefix)+len(str) <= width {
-		fmt.Println(prefix + str)
+		prefixStyle.Printf(prefix)
+		strStyle.Printf(str)
+		fmt.Println()
 		return
 	}
 
@@ -144,7 +158,9 @@ func SplitPrintln(prefix, str string) {
 
 	head := str[:breakIndex] // portion of str to print
 	str = str[breakIndex+1:]
-	fmt.Println(prefix + head)
+	prefixStyle.Printf(prefix)
+	strStyle.Printf(head)
+	fmt.Println()
 
 	for len(prefix)+len(str) > width {
 		breakIndex := findLastBreak(str, width-len(prefix))
@@ -153,11 +169,15 @@ func SplitPrintln(prefix, str string) {
 		}
 		head = str[:breakIndex]
 		str = str[breakIndex+1:]
-		fmt.Println(tab + head)
+		fmt.Printf(tab)
+		strStyle.Printf(head)
+		fmt.Println()
 	}
 
 	if len(str) > 0 {
-		fmt.Println(tab + str)
+		fmt.Printf(tab)
+		strStyle.Printf(str)
+		fmt.Println()
 	}
 }
 

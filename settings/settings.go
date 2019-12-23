@@ -15,12 +15,24 @@ type Settings struct {
 
 /* Style section of settings file */
 type Style struct {
-	TitleColor      string `json:"title-color"`
-	TitleBackground string `json:"title-background"`
-	DateColor       string `json:"date-color"`
-	DateBackground  string `json:"date-background"`
-	IdColor         string `json:"id-color"`
-	IdBackground    string `json:"id-background"`
+	TitleColor           string `json:"title-color"`
+	TitleBackground      string `json:"title-background"`
+	DateColor            string `json:"date-color"`
+	DateBackground       string `json:"date-background"`
+	IdColor              string `json:"id-color"`
+	IdBackground         string `json:"id-background"`
+	TodoHeadColor        string `json:"todo-head-color"`
+	TodoHeadBackground   string `json:"todo-head-background"`
+	TodoBulletColor      string `json:"todo-bullet-color"`
+	TodoBulletBackground string `json:"todo-bullet-background"`
+	TodoItemColor        string `json:"todo-item-color"`
+	TodoItemBackground   string `json:"todo-item-background"`
+	DoneHeadColor        string `json:"done-head-color"`
+	DoneHeadBackground   string `json:"done-head-background"`
+	DoneBulletColor      string `json:"done-bullet-color"`
+	DoneBulletBackground string `json:"done-bullet-background"`
+	DoneItemColor        string `json:"done-item-color"`
+	DoneItemBackground   string `json:"done-item-background"`
 }
 
 /* Settings regarding the text editor used with jot */
