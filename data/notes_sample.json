@@ -1,36 +1,42 @@
 { 
   "notes":
    [
-        {
-            "id": "bngre9ku76li6v1ts97g",
-            "title": "jot",
-            "time": 1575073574,
-            "lines": [],
-            "to-do": [
-                "Alias capability",
-                "Sub items",
-                "Multiple item addition",
-                "Default ls behavior",
-                "Help",
-                "Cycle through search results",
-                "Settings",
-                "Backup notes file",
-                "Improve search algorithm",
-                "Generalize popout option to popout to the user's prefered text editor",
-                "(?) Undo"
-            ],
-            "done": [
-                "CheckItem function",
-                "UncheckItem function",
-                "AddItem function",
-                "RemoveItem function",
-                "Add note in sublime",
-                "Refactor command parser",
-                "Ammend todo item",
-                "Edit note (in text editor)",
-                "Refactor display out of jot.go",
-                "BUG: Edit adds an extra newline"
-            ]
-        }
+    {
+        "id": "bngre9ku76li6v1ts97g",
+        "title": "jot",
+        "time": 1575073574,
+        "lines": [
+            "This is the global todo list for jot."
+        ],
+        "to-do": [
+            "(?) FEAT: Sub-items",
+            "FEAT: Multiple item addition",
+            "FEAT: Default ls behavior",
+            "FEAT: Help",
+            "FEAT: Cycle through search results. i.e. key inputs change wich note is being displayed. Include an option to do what it does now and spit all notes out into the console.",
+            "FEAT: Backup notes file",
+            "FEAT: Improve search algorithm",
+            "FEAT: (?) Undo",
+            "(?) BUG: Cannot add todo item by title",
+            "BUG: ls call with incorrect id displays 0 value note",
+            "FEAT: Confirm when user deletes a note by displaying the the note and asking the user to enter y to delete."
+        ],
+        "done": [
+            "Settings",
+            "Generalize popout option to popout to the user's prefered text editor",
+            "(IMPORTANT) Refactor jot.go and settings.go to load data in the init function! jot.go should have a global Notes variable referenced by the rest of the functions.",
+            "CheckItem function",
+            "UncheckItem function",
+            "AddItem function",
+            "RemoveItem function",
+            "Add note in sublime",
+            "Refactor command parser",
+            "Ammend todo item",
+            "Edit note (in text editor)",
+            "Refactor display out of jot.go",
+            "BUG: Edit adds an extra newline",
+            "Display formating so that list items 1) stay indented and 2) line break between words instead of breaking words up"
+        ]
+    }
     ] 
 }
