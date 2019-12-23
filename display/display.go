@@ -116,7 +116,7 @@ func DisplayNotesBySearch(search string) {
 // Helper functions
 
 /* Splits the string with respect to terminal width and indents based on the prefix width.
-Prints all out to console.*/
+Prints all out to console. Will try to split on word breaks.*/
 func SplitPrintln(prefix, str string) {
 	// Terminal dimentions
 	width, _, err := terminal.GetSize(int(os.Stdout.Fd()))
@@ -137,17 +137,36 @@ func SplitPrintln(prefix, str string) {
 	}
 
 	// print with prefix
-	head := str[:width-len(prefix)] // portion of str to print
-	str = str[width-len(prefix):]
+	breakIndex := findLastBreak(str, width-len(prefix))
+	if breakIndex == 0 {
+		breakIndex = width - len(prefix)
+	}
+
+	head := str[:breakIndex] // portion of str to print
+	str = str[breakIndex+1:]
 	fmt.Println(prefix + head)
 
 	for len(prefix)+len(str) > width {
-		head = str[:width-len(prefix)]
-		str = str[width-len(prefix):]
+		breakIndex := findLastBreak(str, width-len(prefix))
+		if breakIndex == 0 {
+			breakIndex = width - len(prefix)
+		}
+		head = str[:breakIndex]
+		str = str[breakIndex+1:]
 		fmt.Println(tab + head)
 	}
 
 	if len(str) > 0 {
 		fmt.Println(tab + str)
 	}
+}
+
+/* find the last white space with respect to pos */
+func findLastBreak(str string, pos int) int {
+	for i := pos; i >= 0; i-- {
+		if str[i] == ' ' || str[i] == '\t' || str[i] == '\n' {
+			return i
+		}
+	}
+	return 0
 }
