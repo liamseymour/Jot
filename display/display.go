@@ -4,10 +4,12 @@ import (
 	"fmt"
 	jot "jot/model"
 	"jot/settings"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/gookit/color"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 /* 			   	 Display 			   */
@@ -37,7 +39,7 @@ func displayNote(note jot.Note) {
 		fmt.Println()
 	}
 	for i := 0; i < len(note.Lines); i++ {
-		fmt.Println(" ", note.Lines[i])
+		SplitPrintln(" ", note.Lines[i])
 	}
 
 	// to-do
@@ -46,8 +48,8 @@ func displayNote(note jot.Note) {
 		fmt.Println("  To-do: ")
 	}
 	for i := 0; i < len(note.Todo); i++ {
-		fmt.Printf("%5v", i)
-		fmt.Println(")", note.Todo[i])
+		prefix := fmt.Sprintf("%5v) ", i)
+		SplitPrintln(prefix, note.Todo[i])
 	}
 
 	// Done
@@ -56,8 +58,8 @@ func displayNote(note jot.Note) {
 		fmt.Println("  Done: ")
 	}
 	for i := 0; i < len(note.Done); i++ {
-		fmt.Printf("%5v", i)
-		fmt.Println(")", note.Done[i])
+		prefix := fmt.Sprintf("%5v) ", i)
+		SplitPrintln(prefix, note.Done[i])
 	}
 
 	fmt.Println()
@@ -109,4 +111,43 @@ func DisplayNotesBySearch(search string) {
 		}
 	}
 	displayNotes(filtered)
+}
+
+// Helper functions
+
+/* Splits the string with respect to terminal width and indents based on the prefix width.
+Prints all out to console.*/
+func SplitPrintln(prefix, str string) {
+	// Terminal dimentions
+	width, _, err := terminal.GetSize(int(os.Stdout.Fd()))
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// no formating needed
+	if len(prefix)+len(str) <= width {
+		fmt.Println(prefix + str)
+		return
+	}
+
+	// determine tabbing
+	tab := ""
+	for i := len(prefix); i > 0; i-- {
+		tab += " "
+	}
+
+	// print with prefix
+	head := str[:width-len(prefix)] // portion of str to print
+	str = str[width-len(prefix):]
+	fmt.Println(prefix + head)
+
+	for len(prefix)+len(str) > width {
+		head = str[:width-len(prefix)]
+		str = str[width-len(prefix):]
+		fmt.Println(tab + head)
+	}
+
+	if len(str) > 0 {
+		fmt.Println(tab + str)
+	}
 }
