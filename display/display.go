@@ -12,7 +12,7 @@ import (
 
 /* 			   	 Display 			   */
 /* Displays the given note to std out using style settings from path/settings.json. */
-func displayNote(dataPath string, note jot.Note) {
+func displayNote(note jot.Note) {
 	// Load style settings
 	style := settings.GetStyle()
 
@@ -63,39 +63,39 @@ func displayNote(dataPath string, note jot.Note) {
 	fmt.Println()
 }
 
-func DisplayNoteById(path string, id string) {
-	note, _ := jot.GetNoteById(path, id)
-	displayNote(path, note)
+func DisplayNoteById(id string) {
+	note, _ := jot.GetNoteById(id)
+	displayNote(note)
 }
 
-func DisplayNoteByTitle(path string, title string) {
-	id, found := jot.GetIdFromTitle(path, title)
+func DisplayNoteByTitle(title string) {
+	id, found := jot.GetIdFromTitle(title)
 	if found {
-		DisplayNoteById(path, id)
+		DisplayNoteById(id)
 	}
 }
 
 /* Displays the given notes to std out. */
-func displayNotes(path string, notes jot.Notes) {
+func displayNotes(notes jot.Notes) {
 	for i := 0; i < len(notes.Notes); i++ {
-		displayNote(path, notes.Notes[i])
+		displayNote(notes.Notes[i])
 	}
 }
 
 /* Displays the stored notes to std out. */
-func DisplayAllNotes(path string) {
-	displayNotes(path, jot.FetchNotes(path))
+func DisplayAllNotes() {
+	displayNotes(jot.GetNotes())
 }
 
 /* Displays the last note taken to std out. */
-func DisplayLastNote(path string) {
-	notes := jot.FetchNotes(path)
-	displayNote(path, notes.Notes[len(notes.Notes)-1])
+func DisplayLastNote() {
+	notes := jot.GetNotes()
+	displayNote(notes.Notes[len(notes.Notes)-1])
 }
 
 /* Displays notes with any of the keywords in the title to std out. */
-func DisplayNotesBySearch(path string, search string) {
-	notes := jot.FetchNotes(path)
+func DisplayNotesBySearch(search string) {
+	notes := jot.GetNotes()
 	var filtered jot.Notes
 	keywords := strings.Split(search, " ")
 
@@ -108,5 +108,5 @@ func DisplayNotesBySearch(path string, search string) {
 			}
 		}
 	}
-	displayNotes(path, filtered)
+	displayNotes(filtered)
 }

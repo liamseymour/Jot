@@ -28,50 +28,59 @@ type Notes struct {
 	Notes []Note `json:"notes"`
 }
 
-/* Reads Json data from path/notes.json and returns the Notes object. */
-func FetchNotes(path string) Notes {
-	file, err := os.Open(filepath.Join(path, "/notes.json"))
+var notes Notes
+var path string
+
+/* Load notes data and initialize path. */
+func init() {
+	// open and close settings
+	exePath, err := os.Executable()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	path = filepath.Join(exePath, "../data/notes.json")
+	file, err := os.Open(path)
 	if err != nil {
 		panic(err.Error())
 	}
 	defer file.Close()
 
-	var notes Notes
 	bytes, _ := ioutil.ReadAll(file)
 	err = json.Unmarshal(bytes, &notes)
 	if err != nil {
 		panic(err.Error())
 	}
-
-	return notes
 }
 
-/* Writes the given notes object to the given path/notes.json. */
-func writeNotes(notes Notes, path string) {
+/* Writes notes to path. */
+func writeNotes() {
 	bytes, err := json.MarshalIndent(notes, "", "    ")
 	if err != nil {
 		panic(err.Error())
 	}
-	err = ioutil.WriteFile(filepath.Join(path, "/notes.json"), bytes, 0644)
+	err = ioutil.WriteFile(filepath.Join(path), bytes, 0644)
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+func GetNotes() Notes {
+	return notes
 }
 
 // Management
 
 /* Given a string, make a new note and record it. Return the id of the new note */
-func NewNote(path string, text string) string {
+func NewNote(text string) string {
 	note := parseNote(text)
-	notes := FetchNotes(path)
 	notes.Notes = append(notes.Notes, note)
-	writeNotes(notes, path)
+	writeNotes()
 	return note.Id
 }
 
 /* Given an id, delete the note with this id and return its title */
-func DeleteNote(path string, id string) (deletedTitle string, found bool) {
-	notes := FetchNotes(path)
+func DeleteNote(id string) (deletedTitle string, found bool) {
 	found = false
 	deletedTitle = ""
 	for i := 0; i < len(notes.Notes); i++ {
@@ -82,24 +91,24 @@ func DeleteNote(path string, id string) (deletedTitle string, found bool) {
 			break
 		}
 	}
-	writeNotes(notes, path)
+	writeNotes()
 	return
 }
 
 /* Given a title, delete the first note that has the same title.
  * Return the id of the deleted note */
-func DeleteNoteByTitle(path string, title string) (deletedId string, found bool) {
-	deletedId, found = GetIdFromTitle(path, title)
+func DeleteNoteByTitle(title string) (deletedId string, found bool) {
+	deletedId, found = GetIdFromTitle(title)
 	if found {
-		DeleteNote(path, deletedId)
+		DeleteNote(deletedId)
 	}
 	return
 }
 
 /* Given the id of the note, check the nth item.
  * return the item and if the operation was successful. */
-func CheckItem(path string, id string, n int) (item string, success bool) {
-	note, foundNote := GetNoteById(path, id)
+func CheckItem(id string, n int) (item string, success bool) {
+	note, foundNote := GetNoteById(id)
 	foundItem := false
 	item = ""
 	if n < len(note.Todo) && n >= 0 && foundNote {
@@ -111,28 +120,27 @@ func CheckItem(path string, id string, n int) (item string, success bool) {
 
 	success = false
 	if foundItem {
-		var notes Notes
-		notes, success = replaceNote(path, id, note)
+		success = replaceNote(id, note)
 		if foundNote && foundItem && success {
-			writeNotes(notes, path)
+			writeNotes()
 		}
 	}
 
 	return
 }
 
-func CheckItemByNoteTitle(path string, title string, n int) (item string, success bool) {
-	id, found := GetIdFromTitle(path, title)
+func CheckItemByNoteTitle(title string, n int) (item string, success bool) {
+	id, found := GetIdFromTitle(title)
 	if found {
-		return CheckItem(path, id, n)
+		return CheckItem(id, n)
 	}
 	return "", found
 }
 
 /* Given the id of the note, uncheck the nth item.
  * return the item and if the operation was successful. */
-func UnCheckItem(path string, id string, n int) (item string, success bool) {
-	note, foundNote := GetNoteById(path, id)
+func UnCheckItem(id string, n int) (item string, success bool) {
+	note, foundNote := GetNoteById(id)
 	foundItem := false
 	item = ""
 	if n < len(note.Done) && n >= 0 && foundNote {
@@ -144,27 +152,26 @@ func UnCheckItem(path string, id string, n int) (item string, success bool) {
 
 	success = false
 	if foundItem {
-		var notes Notes
-		notes, success = replaceNote(path, id, note)
+		success = replaceNote(id, note)
 		if foundNote && foundItem && success {
-			writeNotes(notes, path)
+			writeNotes()
 		}
 	}
 	return
 }
 
-func UnCheckItemByNoteTitle(path string, title string, n int) (item string, success bool) {
-	id, found := GetIdFromTitle(path, title)
+func UnCheckItemByNoteTitle(title string, n int) (item string, success bool) {
+	id, found := GetIdFromTitle(title)
 	if found {
-		return UnCheckItem(path, id, n)
+		return UnCheckItem(id, n)
 	}
 	return "", found
 }
 
 /* Given the id of the note, uncheck the nth item.
  * return the item and if the operation was successful. */
-func RemoveItem(path string, id string, n int) (item string, success bool) {
-	note, foundNote := GetNoteById(path, id)
+func RemoveItem(id string, n int) (item string, success bool) {
+	note, foundNote := GetNoteById(id)
 	foundItem := false
 	item = ""
 	if n < len(note.Todo) && n >= 0 && foundNote {
@@ -175,52 +182,50 @@ func RemoveItem(path string, id string, n int) (item string, success bool) {
 
 	success = false
 	if foundItem {
-		var notes Notes
-		notes, success = replaceNote(path, id, note)
+		success = replaceNote(id, note)
 		if foundNote && foundItem && success {
-			writeNotes(notes, path)
+			writeNotes()
 		}
 	}
 	return
 }
 
-func RemoveItemByNoteTitle(path string, title string, n int) (item string, success bool) {
-	id, found := GetIdFromTitle(path, title)
+func RemoveItemByNoteTitle(title string, n int) (item string, success bool) {
+	id, found := GetIdFromTitle(title)
 	if found {
-		return RemoveItem(path, id, n)
+		return RemoveItem(id, n)
 	}
 	return "", found
 }
 
 /* Given the id of the note, uncheck the nth item.
  * return the item and if the operation was successful. */
-func AddItem(path string, id string, item string) (success bool) {
-	note, foundNote := GetNoteById(path, id)
+func AddItem(id string, item string) (success bool) {
+	note, foundNote := GetNoteById(id)
 	note.Todo = append(note.Todo, item)
 
 	success = false
 	if foundNote {
-		var notes Notes
-		notes, success = replaceNote(path, id, note)
+		success = replaceNote(id, note)
 		if foundNote && success {
-			writeNotes(notes, path)
+			writeNotes()
 		}
 	}
 	return
 }
 
-func AddItemByNoteTitle(path string, title string, item string) (success bool) {
-	id, found := GetIdFromTitle(path, title)
+func AddItemByNoteTitle(title string, item string) (success bool) {
+	id, found := GetIdFromTitle(title)
 	if found {
-		return AddItem(path, id, item)
+		return AddItem(id, item)
 	}
 	return found
 }
 
 /* Return the string representation of a Note */
-func GetNoteString(path string, id string) (noteString string, success bool) {
+func GetNoteString(id string) (noteString string, success bool) {
 	var note Note
-	note, success = GetNoteById(path, id)
+	note, success = GetNoteById(id)
 	if success {
 		noteString = noteToString(note)
 	} else {
@@ -230,26 +235,26 @@ func GetNoteString(path string, id string) (noteString string, success bool) {
 }
 
 /* Return the string representation of a Note with specified title */
-func GetNoteStringByTitle(path string, title string) (noteString string, success bool) {
-	id, found := GetIdFromTitle(path, title)
+func GetNoteStringByTitle(title string) (noteString string, success bool) {
+	id, found := GetIdFromTitle(title)
 	if found {
-		return GetNoteString(path, id)
+		return GetNoteString(id)
 	}
 	return "", found
 }
 
 /* Given an id and a string representation of a note, overwrite the note with id with the newNoteString */
-func EditNote(path, id, newNoteString string) bool {
+func EditNote(id, newNoteString string) bool {
 	// Create edited version of note
 	newNote := parseNote(newNoteString)
-	oldNote, found := GetNoteById(path, id)
+	oldNote, found := GetNoteById(id)
 	if found {
 		newNote.Id = oldNote.Id
 		newNote.Time = oldNote.Time
 
 		// write it
-		notes, success := replaceNote(path, id, newNote)
-		writeNotes(notes, path)
+		success := replaceNote(id, newNote)
+		writeNotes()
 		return success
 	} else {
 		return found
@@ -260,9 +265,8 @@ func EditNote(path, id, newNoteString string) bool {
 /* Given a path to the folder containing notes.json, an id to a note,
 and a item number to change, replace that list item with newItem. Return if
 the operation was succesful or not. */
-func EditListItem(path, id string, listItem int, newItem string) bool {
+func EditListItem(id string, listItem int, newItem string) bool {
 	// find note
-	notes := FetchNotes(path)
 	var noteToEdit Note
 	for _, note := range notes.Notes {
 		if note.Id == id {
@@ -276,7 +280,7 @@ func EditListItem(path, id string, listItem int, newItem string) bool {
 	if listItem < len(noteToEdit.Todo) {
 		noteToEdit.Todo[listItem] = newItem
 		success = true
-		writeNotes(notes, path)
+		writeNotes()
 	}
 	return success
 }
@@ -329,8 +333,7 @@ func noteToString(note Note) string {
 	return s
 }
 
-func GetNoteById(path, id string) (note Note, found bool) {
-	notes := FetchNotes(path)
+func GetNoteById(id string) (note Note, found bool) {
 	found = false
 	for i := 0; i < len(notes.Notes); i++ {
 		if notes.Notes[i].Id == id {
@@ -342,8 +345,7 @@ func GetNoteById(path, id string) (note Note, found bool) {
 	return
 }
 
-func GetIdFromTitle(path, title string) (id string, found bool) {
-	notes := FetchNotes(path)
+func GetIdFromTitle(title string) (id string, found bool) {
 	found = false
 	id = ""
 	for i := 0; i < len(notes.Notes); i++ {
@@ -355,9 +357,10 @@ func GetIdFromTitle(path, title string) (id string, found bool) {
 	return
 }
 
-func replaceNote(path, id string, newNote Note) (notes Notes, success bool) {
+/* Replace a note with id with the given note.
+This does not write the notes to file but simply mutates the global notes variable. */
+func replaceNote(id string, newNote Note) (success bool) {
 	success = false
-	notes = FetchNotes(path)
 
 	for i := 0; i < len(notes.Notes); i++ {
 		// find note to replace
