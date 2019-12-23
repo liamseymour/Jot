@@ -21,6 +21,7 @@ func displayNote(note jot.Note) {
 	// Setup styles
 	defaultStyle := color.New(color.FgColors["default"], color.BgColors["default"])
 
+	contentStyle := color.New(color.FgColors[style.ContentColor], color.BgColors[style.ContentBackground])
 	titleStyle := color.New(color.FgColors[style.TitleColor], color.BgColors[style.TitleBackground])
 	dateStyle := color.New(color.FgColors[style.DateColor], color.BgColors[style.DateBackground])
 	idStyle := color.New(color.FgColors[style.IdColor], color.BgColors[style.IdBackground])
@@ -47,7 +48,7 @@ func displayNote(note jot.Note) {
 		fmt.Println()
 	}
 	for i := 0; i < len(note.Lines); i++ {
-		SplitPrintln(" ", note.Lines[i], defaultStyle, defaultStyle)
+		SplitPrintln(" ", note.Lines[i], defaultStyle, contentStyle)
 	}
 
 	// 'to-do'

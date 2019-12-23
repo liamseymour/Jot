@@ -2,12 +2,15 @@
     "style": {
         "title-color":"yellow",
         "title-background":"default",
-        
+
         "date-color":"blue",
         "date-background":"default",
 
         "id-color":"blue",
         "id-background":"default",
+
+        "content-color":"default",
+        "content-background":"default",
 
         "todo-head-color":"red",
         "todo-head-background":"default",

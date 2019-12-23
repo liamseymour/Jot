@@ -19,6 +19,8 @@ type Style struct {
 	TitleBackground      string `json:"title-background"`
 	DateColor            string `json:"date-color"`
 	DateBackground       string `json:"date-background"`
+	ContentColor         string `json:"content-color"`
+	ContentBackground    string `json:"content-background"`
 	IdColor              string `json:"id-color"`
 	IdBackground         string `json:"id-background"`
 	TodoHeadColor        string `json:"todo-head-color"`
