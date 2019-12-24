@@ -5,6 +5,7 @@ import (
 	jot "jot/model"
 	"jot/settings"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 
@@ -137,10 +138,7 @@ func DisplayNotesBySearch(search string) {
 Prints all out to console. Will try to split on word breaks.*/
 func SplitPrintln(prefix, str string, prefixStyle, strStyle color.Style) {
 	// Terminal dimentions
-	width, _, err := terminal.GetSize(int(os.Stdout.Fd()))
-	if err != nil {
-		panic(err.Error())
-	}
+	width := GetConsoleWidth()
 
 	// no formating needed
 	if len(prefix)+len(str) <= width {
@@ -195,4 +193,19 @@ func findLastBreak(str string, pos int) int {
 		}
 	}
 	return -1
+}
+
+func GetConsoleWidth() int {
+	var fd int
+	if runtime.GOOS == "windows" {
+		// windows needs to use stdout or will through an error
+		fd = int(os.Stdout.Fd())
+	} else {
+		fd = int(os.Stdin.Fd())
+	}
+	termWidth, _, err := terminal.GetSize(fd)
+	if err != nil {
+		panic(err.Error)
+	}
+	return termWidth
 }
