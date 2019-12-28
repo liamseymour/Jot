@@ -1,42 +1,46 @@
 { 
   "notes":
-   [
-    {
-        "id": "bngre9ku76li6v1ts97g",
-        "title": "jot",
-        "time": 1575073574,
-        "lines": [
-            "This is the global todo list for jot."
-        ],
-        "to-do": [
-            "(?) FEAT: Sub-items",
-            "FEAT: Multiple item addition",
-            "FEAT: Default ls behavior",
-            "FEAT: Help",
-            "FEAT: Cycle through search results. i.e. key inputs change wich note is being displayed. Include an option to do what it does now and spit all notes out into the console.",
-            "FEAT: Backup notes file",
-            "FEAT: Improve search algorithm",
-            "FEAT: (?) Undo",
-            "(?) BUG: Cannot add todo item by title",
-            "BUG: ls call with incorrect id displays 0 value note",
-            "FEAT: Confirm when user deletes a note by displaying the the note and asking the user to enter y to delete."
-        ],
-        "done": [
-            "Settings",
-            "Generalize popout option to popout to the user's prefered text editor",
-            "(IMPORTANT) Refactor jot.go and settings.go to load data in the init function! jot.go should have a global Notes variable referenced by the rest of the functions.",
-            "CheckItem function",
-            "UncheckItem function",
-            "AddItem function",
-            "RemoveItem function",
-            "Add note in sublime",
-            "Refactor command parser",
-            "Ammend todo item",
-            "Edit note (in text editor)",
-            "Refactor display out of jot.go",
-            "BUG: Edit adds an extra newline",
-            "Display formating so that list items 1) stay indented and 2) line break between words instead of breaking words up"
-        ]
-    }
+    [
+        {
+            "id": "bngre9ku76li6v1ts97g",
+            "title": "jot",
+            "time": 1575073574,
+            "lines": [
+                "This is the global todo list for jot."
+            ],
+            "to-do": [
+                "(?) FEAT: Sub-items",
+                "FEAT: Multiple item addition",
+                "FEAT: Default ls behavior",
+                "FEAT: Help",
+                "FEAT: Cycle through search results. i.e. key inputs change wich note is being displayed. Include an option to do what it does now and spit all notes out into the console.",
+                "FEAT: Backup notes file",
+                "FEAT: Improve search algorithm",
+                "FEAT: (?) Undo",
+                "FEAT: Confirm when user deletes a note by displaying the the note and asking the user to enter y to delete.",
+                "REFACT: It would probably be better to use the ids as keys to each note in the json file, instead of putting all the notes in an array. This does have limited improvements as users are more likely to reference a note by the (not unique) title.",
+                "FEAT: password protected / hidden notes.",
+                "(?) FEAT: search by date (range)."
+            ],
+            "done": [
+                "Settings",
+                "Generalize popout option to popout to the user's prefered text editor",
+                "(IMPORTANT) Refactor jot.go and settings.go to load data in the init function! jot.go should have a global Notes variable referenced by the rest of the functions.",
+                "CheckItem function",
+                "UncheckItem function",
+                "AddItem function",
+                "RemoveItem function",
+                "Add note in sublime",
+                "Refactor command parser",
+                "Ammend todo item",
+                "Edit note (in text editor)",
+                "Refactor display out of jot.go",
+                "BUG: Edit adds an extra newline",
+                "Display formating so that list items 1) stay indented and 2) line break between words instead of breaking words up",
+                "BUG: ls call with incorrect id displays 0 value note",
+                "BUG: In command parser: list items, titles, etc... do not need to be word characters",
+                "FEAT: ls option, show headers only."
+            ]
+        }
     ] 
 }
