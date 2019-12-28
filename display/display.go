@@ -84,10 +84,42 @@ func displayNote(note jot.Note) {
 	fmt.Println()
 }
 
+func displayNoteHeader(note jot.Note) {
+	// Load style settings
+	style := settings.GetStyle()
+
+	// Setup styles
+	titleStyle := color.New(color.FgColors[style.TitleColor], color.BgColors[style.TitleBackground])
+	dateStyle := color.New(color.FgColors[style.DateColor], color.BgColors[style.DateBackground])
+	idStyle := color.New(color.FgColors[style.IdColor], color.BgColors[style.IdBackground])
+
+	// Header
+	fmt.Println()
+	time := time.Unix(int64(note.Time), 0).Format("Jan 2 3:04 2006")
+	titleStyle.Printf(note.Title)
+	fmt.Println()
+	fmt.Print("Taken: ")
+	dateStyle.Printf("%v", time)
+	fmt.Println()
+	fmt.Print("ID: ")
+	idStyle.Printf(note.Id)
+
+	fmt.Println()
+}
+
 func DisplayNoteById(id string) {
 	note, found := jot.GetNoteById(id)
 	if found {
 		displayNote(note)
+	} else {
+		fmt.Println("No note found.")
+	}
+}
+
+func DisplayNoteHeaderById(id string) {
+	note, found := jot.GetNoteById(id)
+	if found {
+		displayNoteHeader(note)
 	} else {
 		fmt.Println("No note found.")
 	}
@@ -100,10 +132,24 @@ func DisplayNoteByTitle(title string) {
 	}
 }
 
+func DisplayNoteHeaderByTitle(title string) {
+	id, found := jot.GetIdFromTitle(title)
+	if found {
+		DisplayNoteHeaderById(id)
+	}
+}
+
 /* Displays the given notes to std out. */
 func displayNotes(notes jot.Notes) {
 	for i := 0; i < len(notes.Notes); i++ {
 		displayNote(notes.Notes[i])
+	}
+}
+
+/* Displays the headers of the given notes to std out. */
+func displayNotesHeaders(notes jot.Notes) {
+	for i := 0; i < len(notes.Notes); i++ {
+		displayNoteHeader(notes.Notes[i])
 	}
 }
 
@@ -112,10 +158,21 @@ func DisplayAllNotes() {
 	displayNotes(jot.GetNotes())
 }
 
+/* Displays the headers of the stored notes to std out. */
+func DisplayAllNoteHeaders() {
+	displayNotesHeaders(jot.GetNotes())
+}
+
 /* Displays the last note taken to std out. */
 func DisplayLastNote() {
 	notes := jot.GetNotes()
 	displayNote(notes.Notes[len(notes.Notes)-1])
+}
+
+/* Displays the last note taken to std out. */
+func DisplayLastNoteHeader() {
+	notes := jot.GetNotes()
+	displayNoteHeader(notes.Notes[len(notes.Notes)-1])
 }
 
 /* Displays notes with any of the keywords in the title to std out. */
@@ -134,6 +191,24 @@ func DisplayNotesBySearch(search string) {
 		}
 	}
 	displayNotes(filtered)
+}
+
+/* Displays notes with any of the keywords in the title to std out. */
+func DisplayNotesHeadersBySearch(search string) {
+	notes := jot.GetNotes()
+	var filtered jot.Notes
+	keywords := strings.Split(search, " ")
+
+	// First find notes with the keywords in the title
+	for i := 0; i < len(notes.Notes); i++ {
+		for j, found := 0, false; j < len(keywords) && !found; j++ {
+			if strings.Contains(strings.ToLower(notes.Notes[i].Title), strings.ToLower(keywords[j])) {
+				filtered.Notes = append(filtered.Notes, notes.Notes[i])
+				found = true
+			}
+		}
+	}
+	displayNotesHeaders(filtered)
 }
 
 // Helper functions

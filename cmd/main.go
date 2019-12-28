@@ -36,6 +36,7 @@ func main() {
 		displayByTitle := false
 		displayAll := false
 		hasArgument := false
+		headers := false
 
 		// Parse command
 		// Display using title
@@ -46,6 +47,10 @@ func main() {
 		if MatchStringAndCheck("^ls( -.+)* -a( )?", commandString) {
 			displayAll = true
 		}
+		// Display only note headers
+		if MatchStringAndCheck("^ls( -.+)* -h( )?", commandString) {
+			headers = true
+		}
 		// Some non-option argument is passed
 		if MatchStringAndCheck("^ls( -.+)* [[:word:]]", commandString) {
 			hasArgument = true
@@ -53,10 +58,16 @@ func main() {
 
 		// Execute
 		switch {
+		case displayAll && headers:
+			display.DisplayAllNoteHeaders()
 		case displayAll:
 			display.DisplayAllNotes()
+		case displayByTitle && headers:
+			display.DisplayNoteHeaderByTitle(os.Args[len(os.Args)-1])
 		case displayByTitle:
 			display.DisplayNoteByTitle(os.Args[len(os.Args)-1])
+		case hasArgument && headers:
+			display.DisplayNoteHeaderById(os.Args[len(os.Args)-1])
 		case hasArgument:
 			display.DisplayNoteById(os.Args[len(os.Args)-1])
 		default:
@@ -65,11 +76,22 @@ func main() {
 		}
 	// Search keywords
 	case MatchStringAndCheck("^search( |$)", commandString):
+		headers := false
+
 		if len(os.Args) < 3 {
 			fmt.Println("Insufficient arguments. Use \"jot help search\" for usage.")
 			break
 		}
-		display.DisplayNotesBySearch(strings.Join(os.Args[2:], " "))
+
+		// Display only note headers
+		if MatchStringAndCheck("^search( -.+)* -h( )?", commandString) {
+			headers = true
+		}
+		if headers {
+			display.DisplayNotesHeadersBySearch(strings.Join(os.Args[2:], " "))
+		} else {
+			display.DisplayNotesBySearch(strings.Join(os.Args[2:], " "))
+		}
 
 	// New Note
 	case MatchStringAndCheck("^new( |$)", commandString):
