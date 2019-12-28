@@ -85,8 +85,12 @@ func displayNote(note jot.Note) {
 }
 
 func DisplayNoteById(id string) {
-	note, _ := jot.GetNoteById(id)
-	displayNote(note)
+	note, found := jot.GetNoteById(id)
+	if found {
+		displayNote(note)
+	} else {
+		fmt.Println("No note found.")
+	}
 }
 
 func DisplayNoteByTitle(title string) {
@@ -198,7 +202,7 @@ func findLastBreak(str string, pos int) int {
 func GetConsoleWidth() int {
 	var fd int
 	if runtime.GOOS == "windows" {
-		// windows needs to use stdout or will through an error
+		// windows needs to use stdout or will throw an error
 		fd = int(os.Stdout.Fd())
 	} else {
 		fd = int(os.Stdin.Fd())

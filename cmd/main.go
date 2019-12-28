@@ -82,7 +82,7 @@ func main() {
 			popOut = true
 		}
 		// Title passed
-		if MatchStringAndCheck("^new( -.+)* [[:word:]]+", commandString) {
+		if MatchStringAndCheck("^new( -.+)* [^[:space:]]+", commandString) {
 			title = os.Args[len(os.Args)-1]
 		}
 
@@ -113,7 +113,7 @@ func main() {
 		useTitle := false
 		// Parse command
 		// Bad call
-		if !MatchStringAndCheck("^(del|delete|rm|remove)( -.+)* [[:word:]]*", commandString) {
+		if !MatchStringAndCheck("^(del|delete|rm|remove)( -.+)* [^[:space:]]*", commandString) {
 			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
 			fmt.Println()
 			return
@@ -158,7 +158,7 @@ func main() {
 		useTitle := false
 
 		// Reference note by title
-		if MatchStringAndCheck("^(check)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
+		if MatchStringAndCheck("^(check)( -[[:word:]]+)* -t [^[:space:]]+ [[:digit:]]+", commandString) {
 			useTitle = true
 		}
 
@@ -211,7 +211,7 @@ func main() {
 		useTitle := false
 
 		// Reference note by title
-		if MatchStringAndCheck("^(uncheck)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
+		if MatchStringAndCheck("^(uncheck)( -[[:word:]]+)* -t [^[:space:]]+ [[:digit:]]+", commandString) {
 			useTitle = true
 		}
 
@@ -264,7 +264,7 @@ func main() {
 
 		useTitle := false
 		// Reference note by title
-		if MatchStringAndCheck("^(add)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
+		if MatchStringAndCheck("^(add)( -[[:word:]]+)* -t [^[:space:]]+ [^[:space:]]+", commandString) {
 			useTitle = true
 		}
 
@@ -311,7 +311,7 @@ func main() {
 		useTitle := false
 
 		// Reference note by title
-		if MatchStringAndCheck("^(scratch)( -[[:word:]]*)* -t [[:word:]]+ [[:word:]]+", commandString) {
+		if MatchStringAndCheck("^(scratch)( -[[:word:]]+)* -t [^[:space:]]+ [[:digit:]]+", commandString) {
 			useTitle = true
 		}
 
@@ -358,13 +358,13 @@ func main() {
 		useTitle := false
 		// Parse command
 		// Bad call
-		if !MatchStringAndCheck("^(edit)( -.+)* [[:word:]]*", commandString) {
+		if !MatchStringAndCheck("^(edit)( -.+)* [^[:space:]]*", commandString) {
 			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
 			fmt.Println()
 			return
 		}
 		// Delete by title
-		if MatchStringAndCheck("^(edit)( -.+)* -t [[:word:]]*", commandString) {
+		if MatchStringAndCheck("^(edit)( -.+)* -t [^[:space:]]+", commandString) {
 			useTitle = true
 		}
 
@@ -422,13 +422,13 @@ func main() {
 		useTitle := false
 		// Parse command
 		// Bad call
-		if !MatchStringAndCheck("^(ammend)( -.+)* [[:word:]]* [[:digit:]]* [[:word:]]*", commandString) {
+		if !MatchStringAndCheck("^(ammend)( -[^[:space:]]+)* [^[:space:]]* [[:digit:]]* [^[:space:]]*", commandString) {
 			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
 			fmt.Println()
 			return
 		}
 		// Delete by title
-		if MatchStringAndCheck("^(ammend)( -.+)* -t [[:word:]]* [[:digit:]]* [[:word:]]*", commandString) {
+		if MatchStringAndCheck("^(ammend)( -.+)* -t [^[:space:]]* [[:digit:]]* [^[:space:]]*", commandString) {
 			useTitle = true
 		}
 
