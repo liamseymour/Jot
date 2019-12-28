@@ -1,0 +1,119 @@
+Meta Note: 
+    Capitalized headers delimited by colons and dashes indicate sections.
+    This is because the help display is not complex enough to warrant a 
+    sophisticated format and should not be diffuclt to parse. Further more,
+    help shouldn't be split into a new file foreach command.
+
+-::COMMANDS::-
+Jot Commands:
+- help [command]  . . . . . gets help on command if provided
+- ls [id] . . . . . . . . . display notes
+- new [title] . . . . . . . create a new note with title if provided
+- add [id] [item] . . . . . add item to note with [id]
+- check [id] [n]  . . . . . check the nth item on note with [id]
+- uncheck [id] [n]  . . . . uncheck the nth item on note with [id]
+- scratch [id] [n]  . . . . remove the nth item on note with [id]
+- edit [id] . . . . . . . . edit the note in preferred text editor
+- amend [id] [n] [s]  . . . amend the nth item of note with [id] to be [s]
+- search [keyword]  . . . . display notes with occurrences of [keyword]
+::-COMMANDS-::
+
+-::HELP::-
+jot help:
+    help [command]
+
+    Get help on jot usage.
+    If command is provided, display help for that command.
+    Otherwise, display the general help for jot.
+::-HELP-::
+
+-::LS::-
+jot ls:
+    ls (opts) [id]
+
+    Display a note.
+    If id is provided display a note with id.
+    Otherwise, display the most recent note.
+    (opts):
+        -t . . . display by title, instead of id
+        -a . . . display all notes
+        -h . . . display headers only
+::-LS-::
+
+-::NEW::-
+jot new:
+    new (opts) [title]
+
+    Create a new note.
+    If title is provided start the note with that title.
+    Otherwise, allow the user to enter the title.
+    (opts):
+        -p . . . popout, enter new note in text editor*
+
+    *preferred text editor can be set in settings
+::-NEW-::
+
+-::ADD::-
+jot add:
+    add (opts) [id] [item]
+
+    Add a to-do item [item] to note with [id].
+    (opts):
+        -t . . . display by title, instead of id
+::-ADD-::
+
+-::CHECK::-
+jot check:
+    check (opts) [id] [n]
+
+    Check off nth item from note with [id]
+    (opts):
+        -t . . . display by title, instead of id
+::-CHECK-::
+
+-::UNCHECK::-
+jot uncheck:
+    uncheck (opts) [id] [n]
+
+    Uncheck nth item from note with [id]
+    (opts):
+        -t . . . display by title, instead of id
+::-UNCHECK-::
+
+-::SCRATCH::-
+jot scratch:
+    scratch (opts) [id] [n]
+
+    Remove nth item from note with [id]
+    (opts):
+        -t . . . display by title, instead of id
+::-SCRATCH-::
+
+-::EDIT::-
+jot edit:
+    edit (opts) [id]
+
+    Edit a note with [id] in a text editor*
+    (opts):
+        -t . . . display by title, instead of id
+
+    *preferred text editor can be set in settings
+::-EDIT-::
+
+-::AMEND::-
+jot amend:
+    amend (opts) [id] [n] [s]
+
+    Replace the nth item of note with [id] with [s]
+    (opts):
+        -t . . . display by title, instead of id
+::-AMEND-::
+
+-::SEARCH::-
+jot search:
+    search (opts) [keyword]
+
+    Search for occurrences of [keyword] and display them
+    (opts):
+        None
+::-SEARCH-::

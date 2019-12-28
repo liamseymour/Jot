@@ -31,6 +31,7 @@ Then jot should be in working order.
 - `scratch [id] [n]` remove the nth item on note with [id]
 - `edit [id]`, edit the note in preferred text editor
 - `amend [id] [n] [s]`, amend the nth item of note with [id] to be [s]
+- `search [keyword]`, display notes with occurrences of [keyword]
 
 # Titles vs. Ids
 Be default commands take note ids instead of the user supplied titles. The rational behind this is that titles are not necessarily unique and Ids are. Requiring the user to state that they want to use a title prevents unexpected behavior. E.g. if the user has two notes with titles foo and runs "jot rm foo" then jot will remove the first note with foo as the title.
