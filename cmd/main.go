@@ -439,18 +439,18 @@ func main() {
 			}
 		}
 
-	// ammend, edit a list item
-	case MatchStringAndCheck("^(ammend)( |$)", commandString):
+	// amend, edit a list item
+	case MatchStringAndCheck("^(amend)( |$)", commandString):
 		useTitle := false
 		// Parse command
 		// Bad call
-		if !MatchStringAndCheck("^(ammend)( -[^[:space:]]+)* [^[:space:]]* [[:digit:]]* [^[:space:]]*", commandString) {
+		if !MatchStringAndCheck("^(amend)( -[^[:space:]]+)* [^[:space:]]* [[:digit:]]* [^[:space:]]*", commandString) {
 			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
 			fmt.Println()
 			return
 		}
 		// Delete by title
-		if MatchStringAndCheck("^(ammend)( -.+)* -t [^[:space:]]* [[:digit:]]* [^[:space:]]*", commandString) {
+		if MatchStringAndCheck("^(amend)( -.+)* -t [^[:space:]]* [[:digit:]]* [^[:space:]]*", commandString) {
 			useTitle = true
 		}
 
@@ -468,7 +468,7 @@ func main() {
 				fmt.Println("Success: ")
 				display.DisplayNoteById(id)
 			} else {
-				fmt.Println("Failure: Cannot ammend item.")
+				fmt.Println("Failure: Cannot amend item.")
 			}
 
 		default:
@@ -477,7 +477,7 @@ func main() {
 				fmt.Println("Success: ")
 				display.DisplayNoteById(id)
 			} else {
-				fmt.Println("Failure: Cannot ammend item.")
+				fmt.Println("Failure: Cannot amend item.")
 			}
 		}
 
