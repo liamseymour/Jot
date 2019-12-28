@@ -39,7 +39,10 @@
                 "Display formating so that list items 1) stay indented and 2) line break between words instead of breaking words up",
                 "BUG: ls call with incorrect id displays 0 value note",
                 "BUG: In command parser: list items, titles, etc... do not need to be word characters",
-                "FEAT: ls option, show headers only."
+                "FEAT: ls option, show headers only.",
+                "BUG: 'ammend' should be spelled 'amend' lol",
+                "BUG: new with -p doesn't correctly handle titles",
+                "BUG: new puts the entire note into the title when using the default console input."
             ]
         }
     ] 
