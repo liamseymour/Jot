@@ -42,7 +42,8 @@
                 "FEAT: ls option, show headers only.",
                 "BUG: 'ammend' should be spelled 'amend' lol",
                 "BUG: new with -p doesn't correctly handle titles",
-                "BUG: new puts the entire note into the title when using the default console input."
+                "BUG: new puts the entire note into the title when using the default console input.",
+                "REFACT: Look into better command parsing like using the flags module."
             ]
         }
     ] 

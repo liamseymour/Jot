@@ -40,12 +40,12 @@ Any command that takes an id can instead take a title when the "-t" option is pa
 Jot is still in an infantile stage and may change this to be more user friendly (and quicker to use). It may be a good idea to use titles by default but warn the user if more than one note has the same title.
 
 # Quick Tour of jot
-If you just installed, running `jot ls` should display the global jot to-do list, this is because `jot ls` with no parameters simply lists the most recent note and on install you should only have one note. If you don't care about the global jot to-do list `jot rm -t jot` will delete it; we see `rm` (alternatively `remove`, `del`, and `delete`) is used to delete an entire note. Additional the option `-t` is used to refer to the note by title, we could also use `jot rm bngre9ku76li6v1ts97g`. Be aware that jot will use the **first note it finds** with the supplied title. This is not a problem if you don't have any notes with the same title.
+If you just installed, running `jot ls` should display the global jot to-do list, this is because `jot ls` with no parameters simply lists the most recent note and on install you should only have one note. If you don't care about the global jot to-do list `jot -t rm jot` will delete it; we see `rm` (alternatively `remove`, `del`, and `delete`) is used to delete an entire note. Additional the option `-t` is used to refer to the note by title, we could also use `jot rm bngre9ku76li6v1ts97g`. Be aware that jot will use the **first note it finds** with the supplied title. This is not a problem if you don't have any notes with the same title.
 
 ## Making a Note
 Lets take a note: `jot new` has a few forms, `jot new "foo"` starts the note with the title "foo" and prompts for the rest of the note, line by line. `jot new` is the same but will ask for a title first. Usually you will want to use the `-p` (popout) option, which takes input from an external text editor. 
 
-Let's run `jot new -p`. If you specified a text editor in settings.json, you should be looking at a nearly blank text file. The first line is the title and all the following lines are treated as normal. If one of these lines starts with " - " then it will be treated as a list item and added to the to-do list. Otherwise it is a standard line and will have normal formatting. An example note is below:
+Let's run `jot -p new`. If you specified a text editor in settings.json, you should be looking at a nearly blank text file. The first line is the title and all the following lines are treated as normal. If one of these lines starts with " - " then it will be treated as a list item and added to the to-do list. Otherwise it is a standard line and will have normal formatting. An example note is below:
 
 ```
 foobar
@@ -56,13 +56,13 @@ list items are added to the to-do list
  - this is also a list item
 ```
 
-After saving and hitting enter in the terminal to confirm our note. We should see that jot has parsed and added our note. To check, we can run the command `jot ls -a` which will display all notes you have taken. A compressed form is available with `jot ls -a -h` which will show all of the headers of your notes.
+After saving and hitting enter in the terminal to confirm our note. We should see that jot has parsed and added our note. To check, we can run the command `jot -a ls` which will display all notes you have taken. A compressed form is available with `jot -a -h ls` which will show all of the headers of your notes.
 
 ## Mutating a Note
-With our newly created note, lets check an item off of the list. `jot check -t foobar 0` will check the 0th to-do item from the foobar note, after running you can see that it has been added to the "done" list. To uncheck this item, use the command `jot uncheck -t foobar 0` and the change will be reverted. 
+With our newly created note, lets check an item off of the list. `jot -t check foobar 0` will check the 0th to-do item from the foobar note, after running you can see that it has been added to the "done" list. To uncheck this item, use the command `jot -t uncheck foobar 0` and the change will be reverted. 
 
-Say we realized that we have something else to do, we can add a to-do item with `jot add -t foobar "Just one more thing"`. At the same time we realized that the second item on our list is not necessary, it can be removed entirely with `jot scratch -t foobar 1`.
+Say we realized that we have something else to do, we can add a to-do item with `jot -t add foobar "Just one more thing"`. At the same time we realized that the second item on our list is not necessary, it can be removed entirely with `jot -t scratch foobar 1`.
 
-I realized that I want my lists items to use proper grammar, so lets change "this is a list item" to "This is a list item." with `jot amend -t foobar 0 "This is a list item."`
+I realized that I want my lists items to use proper grammar, so lets change "this is a list item" to "This is a list item." with `jot -t amend foobar 0 "This is a list item."`
 
-If many changes are to be made it is best to use `jot edit -t foobar`. This will allow for editing in a text editor. If there are any completed list items, they will be preceded by " X ".
+If many changes are to be made it is best to use `jot -t edit foobar`. This will allow for editing in a text editor. If there are any completed list items, they will be preceded by " X ".
