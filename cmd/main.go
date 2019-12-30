@@ -23,7 +23,7 @@ func main() {
 	var fPopout bool
 	var fHelp bool
 
-	flag.BoolVar(&fTitle, "t", false, "Reference note by title.")
+	flag.BoolVar(&fTitle, "t", false, "Reference note by title instead of id.")
 	flag.BoolVar(&fAll, "a", false, "Show all notes.")
 	flag.BoolVar(&fHeaders, "h", false, "Show only note headers.")
 	flag.BoolVar(&fPopout, "p", false, "Enter input via text editor.")
@@ -42,7 +42,7 @@ func main() {
 	// Help, -h, --help, help, or no args
 	case command == "help" || fHelp || command == "":
 		// TODO help
-		fmt.Println("Help unimplemented - you're out of luck.")
+		flag.PrintDefaults()
 
 	// List, ls
 	case command == "ls":
@@ -357,7 +357,7 @@ func main() {
 		}
 
 	default:
-		fmt.Printf("Unrecognized command: '%s'. use 'jot help' to see a list of available commands.", command)
+		fmt.Printf("Unrecognized command: '%s'. use 'jot -help' to see a list of available commands.", command)
 		fmt.Println()
 	}
 }
