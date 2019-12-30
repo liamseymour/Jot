@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"jot/display"
@@ -10,111 +11,76 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 )
 
 func main() {
+	// Setup flags and arguments
+	var fTitle bool
+	var fAll bool
+	var fHeaders bool
+	var fPopout bool
+	var fHelp bool
+
+	flag.BoolVar(&fTitle, "t", false, "Reference note by title.")
+	flag.BoolVar(&fAll, "a", false, "Show all notes.")
+	flag.BoolVar(&fHeaders, "h", false, "Show only note headers.")
+	flag.BoolVar(&fPopout, "p", false, "Enter input via text editor.")
+	flag.BoolVar(&fHelp, "help", false, "Show Help.")
+	flag.Parse()
+
+	command := flag.Arg(0)
+
+	// setup paths
 	exePath, err := os.Executable()
 	check(err)
-
 	dataPath := filepath.Join(exePath, "../data/")
 
-	// Create string to run regex on, exlude first arg
-	// as it is always jot
-	commandString := strings.Join(os.Args[1:], " ")
 	switch {
 
 	// Help, -h, --help, help, or no args
-	case MatchStringAndCheck("^(-h|--help|help|)( |$)", commandString):
+	case command == "help" || fHelp || command == "":
 		// TODO help
 		fmt.Println("Help unimplemented - you're out of luck.")
 
 	// List, ls
-	case MatchStringAndCheck("^ls( |$)", commandString):
-		displayByTitle := false
-		displayAll := false
-		hasArgument := false
-		headers := false
-
-		// Parse command
-		// Display using title
-		if MatchStringAndCheck("^ls( -.+)* -t .+", commandString) {
-			displayByTitle = true
-		}
-		// Display all
-		if MatchStringAndCheck("^ls( -.+)* -a( )?", commandString) {
-			displayAll = true
-		}
-		// Display only note headers
-		if MatchStringAndCheck("^ls( -.+)* -h( )?", commandString) {
-			headers = true
-		}
-		// Some non-option argument is passed
-		if MatchStringAndCheck("^ls( -.+)* [^-[:space:]]", commandString) {
-			hasArgument = true
-		}
-
-		// Execute
+	case command == "ls":
 		switch {
-		case displayAll && headers:
+		case fAll && fHeaders:
 			display.DisplayAllNoteHeaders()
-		case displayAll:
+		case fAll:
 			display.DisplayAllNotes()
-		case displayByTitle && headers:
+		case fTitle && fHeaders:
 			display.DisplayNoteHeaderByTitle(os.Args[len(os.Args)-1])
-		case displayByTitle:
+		case fTitle:
 			display.DisplayNoteByTitle(os.Args[len(os.Args)-1])
-		case hasArgument && headers:
+		case flag.Arg(1) != "" && fHeaders:
 			display.DisplayNoteHeaderById(os.Args[len(os.Args)-1])
-		case hasArgument:
+		case flag.Arg(1) != "":
 			display.DisplayNoteById(os.Args[len(os.Args)-1])
 		default:
-			// Todo What should default ls do?
+			// TODO: What should default ls do?
 			display.DisplayLastNote()
 		}
 	// Search keywords
-	case MatchStringAndCheck("^search( |$)", commandString):
-		headers := false
-
-		if len(os.Args) < 3 {
-			fmt.Println("Insufficient arguments. Use \"jot help search\" for usage.")
-			break
-		}
-
-		// Display only note headers
-		if MatchStringAndCheck("^search( -.+)* -h( )?", commandString) {
-			headers = true
-		}
-		if headers {
-			display.DisplayNotesHeadersBySearch(strings.Join(os.Args[2:], " "))
+	case command == "search":
+		if fHeaders {
+			display.DisplayNotesHeadersBySearch(strings.Join(flag.Args()[1:], " "))
 		} else {
-			display.DisplayNotesBySearch(strings.Join(os.Args[2:], " "))
+			display.DisplayNotesBySearch(strings.Join(flag.Args()[1:], " "))
 		}
 
 	// New Note
-	case MatchStringAndCheck("^new( |$)", commandString):
-		popOut := false
-		title := "[TITLE]"
+	case command == "new":
+		title := flag.Arg(1)
 
-		// Parse command
-		// Popout
-		if MatchStringAndCheck("^new( -.+)* -p", commandString) {
-			popOut = true
-		}
-		// Title passed
-		if MatchStringAndCheck("^new( -.+)* [^-[:space:]]+", commandString) {
-			title = os.Args[len(os.Args)-1]
-		}
-
-		// Execute
 		var note string
 		success := true
 		switch {
-		case !popOut:
+		case !fPopout:
 			note = readNoteFromConsole(title)
-		case popOut:
+		case fPopout:
 			note, success = readNoteFromTextEditor(dataPath, title)
 		}
 
@@ -131,23 +97,10 @@ func main() {
 		}
 
 	// Delete a note
-	case MatchStringAndCheck("^(del|delete|rm|remove)( |$)", commandString):
-		useTitle := false
-		// Parse command
-		// Bad call
-		if !MatchStringAndCheck("^(del|delete|rm|remove)( -.+)* [^-[:space:]]*", commandString) {
-			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
-			fmt.Println()
-			return
-		}
-		// Delete by title
-		if MatchStringAndCheck("^(del|delete|rm|remove)( -.+)* -t", commandString) {
-			useTitle = true
-		}
-
+	case command == "rm" || command == "del":
 		switch {
-		case useTitle:
-			title := os.Args[len(os.Args)-1]
+		case fTitle:
+			title := flag.Arg(1)
 			id, found := jot.DeleteNoteByTitle(title)
 			if found {
 				fmt.Printf("Note deleted with id: %s", id)
@@ -158,7 +111,7 @@ func main() {
 			}
 
 		default:
-			id := os.Args[len(os.Args)-1]
+			id := flag.Arg(1)
 			title, found := jot.DeleteNote(id)
 			if found {
 				fmt.Printf("Note deleted with title: %s", title)
@@ -170,21 +123,8 @@ func main() {
 		}
 
 	// Checking an item on the to-do / check list
-	case MatchStringAndCheck("^(check)( |$)", commandString):
-		// zero or one arguments given to check
-		if MatchStringAndCheck("^check$", commandString) {
-			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
-			fmt.Println()
-			return
-		}
-		useTitle := false
-
-		// Reference note by title
-		if MatchStringAndCheck("^(check)( -[[:word:]]+)* -t [^-[:space:]]+ [[:digit:]]+", commandString) {
-			useTitle = true
-		}
-
-		nString := os.Args[len(os.Args)-1]
+	case command == "check":
+		nString := flag.Arg(2)
 		n, err := strconv.Atoi(nString)
 
 		if err != nil || n < 0 {
@@ -194,8 +134,8 @@ func main() {
 
 		switch {
 		// Reference note by title
-		case useTitle:
-			title := os.Args[len(os.Args)-2]
+		case fTitle:
+			title := flag.Arg(1)
 			item, success := jot.CheckItemByNoteTitle(title, n)
 
 			if success {
@@ -209,7 +149,7 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args)-2]
+			id := flag.Arg(1)
 			item, success := jot.CheckItem(id, n)
 
 			if success {
@@ -223,21 +163,8 @@ func main() {
 		}
 
 	// Unchecking an item on the to-do / check list
-	case MatchStringAndCheck("^(uncheck)( |$)", commandString):
-		// zero or one arguments given to uncheck
-		if MatchStringAndCheck("^uncheck$", commandString) {
-			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
-			fmt.Println()
-			return
-		}
-		useTitle := false
-
-		// Reference note by title
-		if MatchStringAndCheck("^(uncheck)( -[[:word:]]+)* -t [^-[:space:]]+ [[:digit:]]+", commandString) {
-			useTitle = true
-		}
-
-		nString := os.Args[len(os.Args)-1]
+	case command == "uncheck":
+		nString := flag.Arg(2)
 		n, err := strconv.Atoi(nString)
 
 		if err != nil || n < 0 {
@@ -247,8 +174,8 @@ func main() {
 
 		switch {
 		// Reference note by title
-		case useTitle:
-			title := os.Args[len(os.Args)-2]
+		case fTitle:
+			title := flag.Arg(1)
 			item, success := jot.UnCheckItemByNoteTitle(title, n)
 
 			if success {
@@ -262,7 +189,7 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args)-2]
+			id := flag.Arg(1)
 			item, success := jot.UnCheckItem(id, n)
 
 			if success {
@@ -276,26 +203,13 @@ func main() {
 		}
 
 	// Add an item to the to-do / check list
-	case MatchStringAndCheck("^(add)( |$)", commandString):
-		// zero or one arguments given to add
-		if MatchStringAndCheck("^add$", commandString) {
-			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
-			fmt.Println()
-			return
-		}
-
-		useTitle := false
-		// Reference note by title
-		if MatchStringAndCheck("^(add)( -[[:word:]]+)* -t [^-[:space:]]+ [^-[:space:]]+", commandString) {
-			useTitle = true
-		}
-
-		item := os.Args[len(os.Args)-1]
+	case command == "add":
+		item := flag.Arg(2)
 
 		switch {
 		// Reference note by title
-		case useTitle:
-			title := os.Args[len(os.Args)-2]
+		case fTitle:
+			title := flag.Arg(1)
 			success := jot.AddItemByNoteTitle(title, item)
 
 			if success {
@@ -309,7 +223,7 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args)-2]
+			id := flag.Arg(1)
 			success := jot.AddItem(id, item)
 
 			if success {
@@ -323,21 +237,8 @@ func main() {
 		}
 
 	// Remove an item from the to-do / check list
-	case MatchStringAndCheck("^(scratch)( |$)", commandString):
-		// zero or one arguments given to scratch
-		if MatchStringAndCheck("^scratch$", commandString) {
-			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
-			fmt.Println()
-			return
-		}
-		useTitle := false
-
-		// Reference note by title
-		if MatchStringAndCheck("^(scratch)( -[[:word:]]+)* -t [^-[:space:]]+ [[:digit:]]+", commandString) {
-			useTitle = true
-		}
-
-		nString := os.Args[len(os.Args)-1]
+	case command == "scratch":
+		nString := flag.Arg(2)
 		n, err := strconv.Atoi(nString)
 
 		if err != nil || n < 0 {
@@ -347,8 +248,8 @@ func main() {
 
 		switch {
 		// Reference note by title
-		case useTitle:
-			title := os.Args[len(os.Args)-2]
+		case fTitle:
+			title := flag.Arg(1)
 			item, success := jot.RemoveItemByNoteTitle(title, n)
 
 			if success {
@@ -362,7 +263,7 @@ func main() {
 
 		// No options
 		default:
-			id := os.Args[len(os.Args)-2]
+			id := flag.Arg(1)
 			item, success := jot.RemoveItem(id, n)
 
 			if success {
@@ -376,23 +277,10 @@ func main() {
 		}
 
 	// edit note
-	case MatchStringAndCheck("^(edit)( |$)", commandString):
-		useTitle := false
-		// Parse command
-		// Bad call
-		if !MatchStringAndCheck("^(edit)( -.+)* [^-[:space:]]*", commandString) {
-			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
-			fmt.Println()
-			return
-		}
-		// Delete by title
-		if MatchStringAndCheck("^(edit)( -.+)* -t [^-[:space:]]+", commandString) {
-			useTitle = true
-		}
-
+	case command == "edit":
 		switch {
-		case useTitle:
-			title := os.Args[len(os.Args)-1]
+		case fTitle:
+			title := flag.Arg(1)
 			id, found := jot.GetIdFromTitle(title)
 			oldText, found := jot.GetNoteString(id)
 
@@ -416,7 +304,7 @@ func main() {
 			}
 
 		default:
-			id := os.Args[len(os.Args)-1]
+			id := flag.Arg(1)
 			oldText, found := jot.GetNoteString(id)
 
 			// After getting user input, edit the note
@@ -440,27 +328,14 @@ func main() {
 		}
 
 	// amend, edit a list item
-	case MatchStringAndCheck("^(amend)( |$)", commandString):
-		useTitle := false
-		// Parse command
-		// Bad call
-		if !MatchStringAndCheck("^(amend)( -[^[:space:]]+)* [^-[:space:]]* [[:digit:]]* [^-[:space:]]*", commandString) {
-			fmt.Printf("Not a recognized use of %s. Use \"jot help %s\" for usage.", os.Args[1], os.Args[1])
-			fmt.Println()
-			return
-		}
-		// Delete by title
-		if MatchStringAndCheck("^(amend)( -.+)* -t [^-[:space:]]* [[:digit:]]* [^-[:space:]]*", commandString) {
-			useTitle = true
-		}
-
-		n, err := strconv.Atoi(os.Args[len(os.Args)-2])
+	case command == "amend":
+		n, err := strconv.Atoi(flag.Arg(2))
 		check(err)
 		var id string
-		newItem := os.Args[len(os.Args)-1]
+		newItem := flag.Arg(3)
 
 		switch {
-		case useTitle:
+		case fTitle:
 			title := os.Args[len(os.Args)-3]
 			var success bool
 			id, success = jot.GetIdFromTitle(title)
@@ -482,22 +357,12 @@ func main() {
 		}
 
 	default:
-		fmt.Printf("Unrecognized command: '%s'. use 'jot help' to see a list of available commands.", commandString)
+		fmt.Printf("Unrecognized command: '%s'. use 'jot help' to see a list of available commands.", command)
 		fmt.Println()
 	}
 }
 
 /*************Helper Functions*************/
-
-func MatchStringAndCheck(pattern string, s string) bool {
-	match, err := regexp.MatchString(pattern, s)
-	if err != nil {
-		fmt.Println("Command parsing error.")
-		panic(err.Error())
-	}
-	return match
-}
-
 func check(err error) {
 	if err != nil {
 		panic(err.Error())
